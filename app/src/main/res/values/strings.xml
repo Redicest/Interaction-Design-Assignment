@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Medicine Control System</string>
+    <string name="mainpage_takingPhotos">扫描上传</string>
+    <string name="mainpage_medicineReminder">喂药提醒</string>
+    <string name="mainpage_updateRecord">上传记录</string>
+    <string name="mainpage_individualCenter">个人中心</string>
 </resources>

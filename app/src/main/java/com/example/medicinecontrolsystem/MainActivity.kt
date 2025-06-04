@@ -132,7 +132,7 @@ fun ImageWithText(
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun MainActivityPreview() {
     MedicineControlSystemTheme {
         Surface(
             modifier = Modifier.
@@ -141,7 +141,7 @@ fun GreetingPreview() {
         ){
             MainPageApp(modifier = Modifier.
             fillMaxSize().
-            background(Color.LightGray.copy(alpha = 0.3f)))
+            background(Color.White.copy(alpha = 0.1f)))
         }
 
     }

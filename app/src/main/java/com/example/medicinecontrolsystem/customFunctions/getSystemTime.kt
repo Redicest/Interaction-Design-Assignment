@@ -34,21 +34,21 @@ class TimeViewModel: ViewModel() {
         }
     }
 
-    private fun updateTime(){
+    private fun updateTime() {
         val calendar = Calendar.getInstance()
         hour.value = calendar.get(Calendar.HOUR_OF_DAY)
         minute.value = calendar.get(Calendar.MINUTE)
-        formattedTime.value = "${hour.value}:${minute.value}"
+
+        // 使用更简洁的时间格式化方式
+        formattedTime.value = String.format("%02d:%02d", hour.value, minute.value)
 
         year.value = calendar.get(Calendar.YEAR)
-        month.value = calendar.get(Calendar.MONTH)
+        month.value = calendar.get(Calendar.MONTH) + 1 // 月份从0开始，需要+1
         day.value = calendar.get(Calendar.DAY_OF_MONTH)
-        formattedData.value = "${year.value}年${month.value}月${day.value}日"
+        formattedData.value = "${month.value}月${day.value}日"
 
         weekDay.value = calendar.get(Calendar.DAY_OF_WEEK)
         formattedWeekDay.value = getWeekDayName(weekDay.value)
-
-
     }
 
     private fun getWeekDayName(weekDay:Int): String{

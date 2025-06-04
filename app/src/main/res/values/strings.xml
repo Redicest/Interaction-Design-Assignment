@@ -1,8 +1,7 @@
 <resources>
     <string name="app_name">Medicine Control System</string>
-    <string name="mainpage_takingPhotos">扫描上传</string>
-    <string name="mainpage_medicineReminder">喂药提醒</string>
-    <string name="mainpage_updateRecord">上传记录</string>
-    <string name="mainpage_individualCenter">个人中心</string>
-    <string name="scanpage_userReminder">请将\n床头条形码与药盒条形码\n放入框内</string>
+    <string name="time_morning">上午</string>
+    <string name="time_noon">中午</string>
+    <string name="time_evening">晚上</string>
+    <string name="time_beforeSleep">睡前</string>
 </resources>

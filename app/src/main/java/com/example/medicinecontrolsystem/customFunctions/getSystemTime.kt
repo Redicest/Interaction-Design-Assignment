@@ -20,6 +20,7 @@ class TimeViewModel: ViewModel() {
     val formattedData = mutableStateOf("")
     val formattedTime = mutableStateOf("")
     val formattedWeekDay = mutableStateOf("")
+    val timePhrase = mutableStateOf("")
 
     init {
         startTimeUpdater()
@@ -49,6 +50,8 @@ class TimeViewModel: ViewModel() {
 
         weekDay.value = calendar.get(Calendar.DAY_OF_WEEK)
         formattedWeekDay.value = getWeekDayName(weekDay.value)
+
+        timePhrase.value = getTimePhrase(hour.value)
     }
 
     private fun getWeekDayName(weekDay:Int): String{
@@ -62,5 +65,15 @@ class TimeViewModel: ViewModel() {
             Calendar.SATURDAY->"星期六"
             else->"时间错误"
         }
+    }
+
+    private fun getTimePhrase(hour:Int):String{
+        var tempPhrase = ""
+        if((hour >= 0) && (hour < 12 )){
+            tempPhrase = "上午"
+        } else if(hour >= 12) {
+            tempPhrase = "下午"
+        }
+        return tempPhrase
     }
 }

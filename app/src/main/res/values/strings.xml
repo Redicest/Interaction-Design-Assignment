@@ -4,4 +4,5 @@
     <string name="time_noon">中午</string>
     <string name="time_evening">晚上</string>
     <string name="time_beforeSleep">睡前</string>
+    <string name="currentTasks">正在进行</string>
 </resources>

@@ -71,7 +71,7 @@ fun TimeBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(1.dp)
-                .background(Color(0xFFE0E0E0))
+                .background(Color(0xFFE0E0E0))//0xFFE0E0E0
                 .padding(top = 8.dp)
         )
     }

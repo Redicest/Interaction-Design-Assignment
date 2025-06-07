@@ -5,4 +5,11 @@
     <string name="time_evening">晚上</string>
     <string name="time_beforeSleep">睡前</string>
     <string name="currentTasks">正在进行</string>
+    <string name="patient_1_name">王小花</string>
+    <string name="patient_1_bednumber">床号615</string>
+    <string name="medicine_box">药盒ID 514153</string>
+    <string name="not_taking_medicine">未服药</string>
+    <string name="have_taking_medicine">已服药</string>
+    <string name="additional_inormation">备注</string>
+    <string name="scanning_check">扫描核对</string>
 </resources>

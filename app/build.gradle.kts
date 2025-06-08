@@ -41,7 +41,7 @@ android {
 }
 
 dependencies {
-
+    debugImplementation("androidx.navigation:navigation-testing:2.7.7")
     val nav_version1 = "2.7.7"
     implementation ("androidx.navigation:navigation-fragment-ktx:$nav_version1")
     implementation ("androidx.navigation:navigation-ui-ktx:$nav_version1")

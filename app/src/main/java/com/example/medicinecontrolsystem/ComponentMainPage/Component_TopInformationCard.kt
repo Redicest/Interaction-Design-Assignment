@@ -1,4 +1,4 @@
-package com.example.medicinecontrolsystem
+package com.example.medicinecontrolsystem.ComponentMainPage
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -48,14 +48,15 @@ fun TopInformationCard(modifier:Modifier = Modifier,
 
 
     Box(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxWidth(),
         contentAlignment = Alignment.TopCenter
     ){
         Box(
         ){
             Card(
                 modifier = Modifier
-                    .size(width = 1012.dp, height = 474.dp)
+                    .size(width = 1012.dp, height = 474.dp),
+                shape = RoundedCornerShape(25.dp)
             ) {
                 Box(
                     modifier = Modifier

@@ -1,4 +1,4 @@
-package com.example.medicinecontrolsystem
+package com.example.medicinecontrolsystem.ComponentMainPage
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -14,6 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.medicinecontrolsystem.R
 import com.example.medicinecontrolsystem.customFunctions.TimeViewModel
 
 @Composable

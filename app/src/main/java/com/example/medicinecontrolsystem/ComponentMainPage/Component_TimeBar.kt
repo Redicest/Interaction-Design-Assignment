@@ -1,4 +1,4 @@
-package com.example.medicinecontrolsystem
+package com.example.medicinecontrolsystem.ComponentMainPage
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.medicinecontrolsystem.R
 import com.example.medicinecontrolsystem.customFunctions.TimeBarViewModel
 
 @Composable

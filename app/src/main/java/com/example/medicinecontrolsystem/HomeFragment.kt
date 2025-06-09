@@ -50,7 +50,7 @@ fun HomeFragmentPage(){
         contentAlignment = Alignment.TopCenter,
     ){
         Column(){
-            Spacer(modifier = Modifier.height(100.dp))
+            Spacer(modifier = Modifier.height(80.dp))
             TopInformationCard(gradinetBrush = Brush.horizontalGradient(colors = listOf(Color(0xFFD9F0FF),
                 Color(0xFFF2F7FB))))
             Spacer(modifier = Modifier.height(50.dp))
@@ -67,11 +67,11 @@ fun HomeFragmentPage(){
 @Preview(widthDp = 1080, heightDp = 2160)
 @Composable
 fun HomeFragmentPreview(){
-        Scaffold(
-            bottomBar = { BottomNavBar(navController = rememberNavController()) }
-        ) { innerPadding ->
-            Box(Modifier.padding(innerPadding)) {
+//        Scaffold(
+//            bottomBar = { BottomNavBar(navController = rememberNavController()) }
+//        ) { innerPadding ->
+//            Box(Modifier.padding(innerPadding)) {
                 HomeFragmentPage()
-            }
-        }
+//            }
+//        }
     }

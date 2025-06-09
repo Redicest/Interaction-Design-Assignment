@@ -7,6 +7,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+/*
+*函数接口：
+* updateMedicineState(patientId: Int, taken: Boolean) 更新病人是否服药状态
+* getMedicineState(patientId: Int): Boolean 返回病人是否服药
+*
+*/
 
 class MedicineTakingStateViewModel : ViewModel() {
     // 使用病人ID作为键存储状态

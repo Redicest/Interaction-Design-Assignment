@@ -40,7 +40,7 @@ fun TopInformationCard(modifier:Modifier = Modifier,
                        completedTaskViewModel: CompletedTaskViewModel = viewModel()
 ){
     val formattedTime by systemTimeViewModel.formattedTime
-    val formattedDate by systemTimeViewModel.formattedData
+    val formattedDate by systemTimeViewModel.formattedDate
     val formattedWeekDay by systemTimeViewModel.formattedWeekDay
 
     val totalTasks = completedTaskViewModel.getTaskProgress().second

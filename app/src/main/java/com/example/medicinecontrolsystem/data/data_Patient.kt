@@ -12,7 +12,7 @@ data class data_Patient(
 )
 
 val patients = listOf(
-    data_Patient(1 ,R.drawable.oip_c,R.string.patient_1_name,R.string.patient_1_bednumber),
+    data_Patient(1, R.drawable.oip_c,R.string.patient_1_name,R.string.patient_1_bednumber),
     data_Patient(2, R.drawable.oip_c,R.string.patient_1_name,R.string.patient_1_bednumber),
     data_Patient(3, R.drawable.oip_c,R.string.patient_1_name,R.string.patient_1_bednumber),
     data_Patient(4, R.drawable.oip_c,R.string.patient_1_name,R.string.patient_1_bednumber),

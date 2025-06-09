@@ -38,12 +38,7 @@ class RecordFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("记录内容", style = MaterialTheme.typography.headlineMedium)
-                }
+                RecordFragmentPage()
             }
         }
     }

@@ -45,17 +45,23 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.material.icons.rounded.Create
 import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.navigation.NavController
 import com.example.medicinecontrolsystem.R
+
 import com.example.medicinecontrolsystem.data.data_Patient
 import com.example.medicinecontrolsystem.data.patients
 import com.example.medicinecontrolsystem.customFunctions.MedicineTakingStateViewModel
 
 @Composable
-fun PatientInformationList(modifier:Modifier = Modifier){
+fun PatientInformationList(
+    modifier:Modifier = Modifier,
+    navController: NavController ?= null
+    ){
     LazyColumn {
         items(patients) {
             PatientInformationItem(
                 patient = it,
+                navController= navController
                 )
         }
     }
@@ -65,7 +71,8 @@ fun PatientInformationList(modifier:Modifier = Modifier){
 fun PatientInformationItem(
     patient: data_Patient,
     modifier: Modifier = Modifier,
-    viewModel: MedicineTakingStateViewModel = viewModel()
+    viewModel: MedicineTakingStateViewModel = viewModel(),
+    navController: NavController ?= null
 ) {
     // 观察该病人的状态变化
     val medicineState by viewModel.statesFlow.collectAsState()
@@ -175,7 +182,12 @@ fun PatientInformationItem(
                             Icon(
                                 Icons.Rounded.Create,
                                 contentDescription = null,
-                                modifier = Modifier.padding(start = 50.dp).size(50.dp)
+                                modifier = Modifier
+                                    .padding(start = 50.dp)
+                                    .size(50.dp)
+                                    .clickable{
+                                        navController?.navigate("photo_submit")
+                                    }
                             )
                             Text(
                                 text = stringResource(R.string.additional_inormation),

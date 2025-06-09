@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.compose.runtime.getValue
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.medicinecontrolsystem.ui.theme.MedicineControlSystemTheme
 
@@ -28,7 +30,13 @@ class MainActivity : ComponentActivity() {
 
                 Scaffold(
                     bottomBar = {
-                        BottomNavBar(navController = navController)
+                        // 隐藏底部导航栏当在照片提交页面时
+                        val navBackStackEntry by navController.currentBackStackEntryAsState()
+                        val currentRoute = navBackStackEntry?.destination?.route
+
+                        if (currentRoute != "photo_submit") {
+                            BottomNavBar(navController = navController)
+                        }
                     }
                 ) { innerPadding ->
                     NavHost(
@@ -115,6 +123,17 @@ class MainActivity : ComponentActivity() {
                             }
                         ){
                             ProfileFragment()
+                        }
+                        composable(
+                            route = "photo_submit",
+                            enterTransition = {
+                                slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Up)
+                            },
+                            exitTransition = {
+                                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Down)
+                            }
+                        ){
+                            PhotoSubmittingFragment()
                         }
                     }
                 }

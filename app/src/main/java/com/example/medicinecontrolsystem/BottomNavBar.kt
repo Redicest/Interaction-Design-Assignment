@@ -9,7 +9,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import androidx.compose.runtime.getValue
 import androidx.compose.material3.Icon
 import androidx.compose.foundation.layout.Box
@@ -21,7 +20,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.medicinecontrolsystem.ui.theme.MedicineControlSystemTheme
 
 
 // 导航项数据类
@@ -75,19 +73,6 @@ fun BottomNavBar(navController: NavController, modifier : Modifier = Modifier) {
                     }
                 )
             }
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewBottomNavBar() {
-    // 添加主题包装
-    MedicineControlSystemTheme {
-        // 添加Surface容器
-        Surface {
-            val mockNavController = rememberNavController()
-            BottomNavBar(navController = mockNavController)
         }
     }
 }

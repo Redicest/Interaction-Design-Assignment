@@ -45,11 +45,17 @@ import com.example.medicinecontrolsystem.customFunctions.MedicineTakingStateView
 import com.example.medicinecontrolsystem.data.data_Patient
 
 @Composable
-fun PatientRecordList(modifier:Modifier = Modifier){
+fun PatientRecordList(
+    modifier:Modifier = Modifier,
+    viewModel: MedicineTakingStateViewModel,
+    systemTimeViewModel: TimeViewModel
+    ){
     LazyColumn{
         items(patients) {
             PatientRecordItem(
                 patient = it,
+                viewModel = viewModel,
+                systemTimeViewModel = systemTimeViewModel
             )
         }
     }
@@ -59,8 +65,8 @@ fun PatientRecordList(modifier:Modifier = Modifier){
 fun PatientRecordItem(
     patient: data_Patient,
     modifier: Modifier = Modifier,
-    viewModel: MedicineTakingStateViewModel = viewModel(),
-    systemTimeViewModel: TimeViewModel = viewModel()
+    viewModel: MedicineTakingStateViewModel,
+    systemTimeViewModel: TimeViewModel
 ){
     // 观察该病人的状态变化
     val medicineState by viewModel.statesFlow.collectAsState()

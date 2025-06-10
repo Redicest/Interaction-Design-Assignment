@@ -37,7 +37,7 @@ import com.example.medicinecontrolsystem.customFunctions.CompletedTaskViewModel
 fun TopInformationCard(modifier:Modifier = Modifier,
                        gradinetBrush: Brush,
                        systemTimeViewModel: TimeViewModel = viewModel(),
-                       completedTaskViewModel: CompletedTaskViewModel = viewModel()
+                       completedTaskViewModel: CompletedTaskViewModel
 ){
     val formattedTime by systemTimeViewModel.formattedTime
     val formattedDate by systemTimeViewModel.formattedDate
@@ -144,14 +144,4 @@ fun taskProgressBar(
             )
         }
     }
-}
-
-
-
-@Preview(widthDp = 1080, heightDp = 2160)
-@Composable
-fun TopInformationCardPreview(){
-    TopInformationCard(gradinetBrush = Brush.horizontalGradient(colors = listOf(Color(0xFFD9F0FF),
-        Color(0xFFF2F7FB)
-    )))
 }

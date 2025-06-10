@@ -55,13 +55,15 @@ import com.example.medicinecontrolsystem.customFunctions.MedicineTakingStateView
 @Composable
 fun PatientInformationList(
     modifier:Modifier = Modifier,
-    navController: NavController ?= null
+    navController: NavController ?= null,
+    medicineTakingStateViewModel: MedicineTakingStateViewModel
     ){
     LazyColumn {
         items(patients) {
             PatientInformationItem(
                 patient = it,
-                navController= navController
+                navController= navController,
+                viewModel = medicineTakingStateViewModel
                 )
         }
     }
@@ -71,7 +73,7 @@ fun PatientInformationList(
 fun PatientInformationItem(
     patient: data_Patient,
     modifier: Modifier = Modifier,
-    viewModel: MedicineTakingStateViewModel = viewModel(),
+    viewModel: MedicineTakingStateViewModel,
     navController: NavController ?= null
 ) {
     // 观察该病人的状态变化
@@ -260,11 +262,4 @@ fun PatientText(
             fontSize = 40.sp
         )
     }
-}
-
-
-@Preview(widthDp = 1080, heightDp = 2160, backgroundColor = 1)
-@Composable
-fun PatientInformationListPreview(){
-    PatientInformationList()
 }

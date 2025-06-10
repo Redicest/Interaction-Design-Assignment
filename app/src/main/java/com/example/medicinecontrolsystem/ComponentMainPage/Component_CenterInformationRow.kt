@@ -20,7 +20,7 @@ import com.example.medicinecontrolsystem.customFunctions.TimeViewModel
 @Composable
 fun CenterInformation(
     modifier:Modifier = Modifier,
-    centerInformationViewModel: TimeViewModel = viewModel()
+    centerInformationViewModel: TimeViewModel
     ){
     val timePhrase by centerInformationViewModel.timePhrase
     val timeFormatted by centerInformationViewModel.formattedTime
@@ -41,10 +41,4 @@ fun CenterInformation(
             fontWeight = FontWeight.W600
         )
     }
-}
-
-@Preview(widthDp = 1080, heightDp = 2160)
-@Composable
-fun CenterInformationPreview(){
-    CenterInformation()
 }

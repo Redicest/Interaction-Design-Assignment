@@ -21,12 +21,7 @@ class ProfileFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("个人中心", style = MaterialTheme.typography.headlineMedium)
-                }
+
             }
         }
     }

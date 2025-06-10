@@ -7,17 +7,37 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.medicinecontrolsystem.ComponentMainPage.CenterInformation
+import com.example.medicinecontrolsystem.ComponentMainPage.PatientInformationList
+import com.example.medicinecontrolsystem.ComponentMainPage.TimeBar
+import com.example.medicinecontrolsystem.ComponentMainPage.TopInformationCard
+import com.example.medicinecontrolsystem.ComponentRecordPage.CenterDateBarList
+import com.example.medicinecontrolsystem.ComponentRecordPage.PatientRecordList
+import com.example.medicinecontrolsystem.ComponentRecordPage.TopInformationBar
+import com.example.medicinecontrolsystem.customFunctions.CompletedTaskViewModel
+import com.example.medicinecontrolsystem.customFunctions.MedicineTakingStateViewModel
+import com.example.medicinecontrolsystem.customFunctions.TimeBarViewModel
+import com.example.medicinecontrolsystem.customFunctions.TimeViewModel
 import com.example.medicinecontrolsystem.ui.theme.MedicineControlSystemTheme
 
 
@@ -68,7 +88,7 @@ class MainActivity : ComponentActivity() {
                                     animationSpec = tween(300))
                             }
                         ) {
-                            HomeFragment()
+                            HomeScreen(navController = navController)
                         }
                         composable(
                             route = "record",
@@ -95,7 +115,7 @@ class MainActivity : ComponentActivity() {
                                     animationSpec = tween(300))
                             }
                         ) {
-                            RecordFragment()
+                            RecordScreen()
                         }
                         composable(
                             route = "profile",
@@ -141,3 +161,96 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
+@Composable
+fun HomeScreen(navController: NavController){
+    // 获取 ViewModel 实例
+    val timeViewModel: TimeViewModel = viewModel()
+    val timeBarViewModel: TimeBarViewModel = viewModel()
+    val completedTaskViewModel: CompletedTaskViewModel = viewModel()
+    val medicineTakingStateViewModel: MedicineTakingStateViewModel = viewModel()
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(brush = Brush.verticalGradient(colors = listOf(Color(0xFFFFFCF7),
+            Color(0xFFE6F1FF)))),
+        contentAlignment = Alignment.TopCenter,
+    ){
+        Column(){
+            Spacer(modifier = Modifier.height(80.dp))
+            TopInformationCard(
+                gradinetBrush = Brush.horizontalGradient(colors = listOf(Color(0xFFD9F0FF), Color(0xFFF2F7FB))),
+                systemTimeViewModel = timeViewModel,
+                completedTaskViewModel = completedTaskViewModel
+                )
+            Spacer(modifier = Modifier.height(50.dp))
+            TimeBar(
+                timeBarViewModel = timeBarViewModel
+            )
+            Spacer(modifier = Modifier.height(50.dp))
+            CenterInformation(
+                centerInformationViewModel = timeViewModel
+            )
+            Spacer(modifier = Modifier.height(50.dp))
+            PatientInformationList(
+                navController = navController,
+                medicineTakingStateViewModel = medicineTakingStateViewModel
+                )
+        }
+    }
+}
+
+@Composable
+fun RecordScreen(){
+    // 获取 ViewModel 实例
+    val timeViewModel: TimeViewModel = viewModel()
+    val medicineTakingStateViewModel: MedicineTakingStateViewModel = viewModel()
+
+    Box(
+        modifier = Modifier.fillMaxSize().background(brush = Brush.verticalGradient(colors = listOf(Color(0xFFFFFCF7),
+            Color(0xFFE6F1FF)))),
+        contentAlignment = Alignment.TopCenter,
+    ){
+        Column(){
+            Spacer(modifier = Modifier.height(80.dp))
+            TopInformationBar()
+            Spacer(modifier = Modifier.height(40.dp))
+            CenterDateBarList(
+                timeViewModel = timeViewModel
+            )
+            Spacer(modifier = Modifier.height(40.dp))
+            PatientRecordList(
+                viewModel = medicineTakingStateViewModel,
+                systemTimeViewModel = timeViewModel
+            )
+        }
+    }
+}
+
+//@Preview(widthDp = 1080, heightDp = 2160)
+//@Composable
+//fun HomeScreenPreview() {
+//    // 创建模拟 ViewModel
+//    val mockTimeViewModel = TimeViewModel()
+//    val mockTimeBarViewModel = TimeBarViewModel()
+//    val mockCompletedTaskViewModel = CompletedTaskViewModel()
+//    val mockMedicineStateViewModel = MedicineTakingStateViewModel()
+//
+//    MedicineControlSystemTheme {
+//        Scaffold(
+//            bottomBar = { BottomNavBar(navController = rememberNavController()) }
+//        ) { innerPadding ->
+//            Box(Modifier.padding(innerPadding)) {
+//                HomeScreen(
+//                    navController = rememberNavController(),
+//                    // 传入模拟 ViewModel
+//                    timeViewModel = mockTimeViewModel,
+//                    timeBarViewModel = mockTimeBarViewModel,
+//                    completedTaskViewModel = mockCompletedTaskViewModel,
+//                    medicineTakingStateViewModel = mockMedicineStateViewModel
+//                )
+//            }
+//        }
+//    }
+//}

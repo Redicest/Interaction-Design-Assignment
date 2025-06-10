@@ -28,7 +28,7 @@ import com.example.medicinecontrolsystem.customFunctions.TimeViewModel
 
 @Composable
 fun CenterDateBarList(
-    timeViewModel: TimeViewModel = viewModel(),
+    timeViewModel: TimeViewModel,
     modifier: Modifier = Modifier
 ) {
     // 获取当前日期
@@ -226,10 +226,4 @@ fun IndicatorBar(
             )
         }
     }
-}
-
-@Preview(widthDp = 1080, heightDp = 2160)
-@Composable
-fun CenterDateBarPreview(){
-    CenterDateBarList()
 }

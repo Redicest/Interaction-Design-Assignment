@@ -32,7 +32,7 @@ import com.example.medicinecontrolsystem.customFunctions.TimeBarViewModel
 @Composable
 fun TimeBar(
     modifier: Modifier = Modifier,
-    timeBarViewModel: TimeBarViewModel = viewModel()
+    timeBarViewModel: TimeBarViewModel
 ) {
     // 使用 StateFlow 收集状态
     val selectedIndex by timeBarViewModel.selectedIndex.collectAsState()
@@ -111,10 +111,4 @@ fun TimeBarItem(
 
         )
     }
-}
-
-@Preview(widthDp = 1080, heightDp = 2160)
-@Composable
-fun TimeBarPreview(){
-    TimeBar()
 }

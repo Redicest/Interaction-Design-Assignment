@@ -40,43 +40,42 @@ class HomeFragment : Fragment() {
 
         return ComposeView(requireContext()).apply {
             setContent {
-                HomeFragmentPage(navController = navController)
+//                HomeFragmentPage(navController = navController)
             }
         }
     }
 }
 
-@Composable
-fun HomeFragmentPage(navController: NavController){
-    Box(
-        modifier = Modifier.fillMaxSize().background(brush = Brush.verticalGradient(colors = listOf(Color(0xFFFFFCF7),
-            Color(0xFFE6F1FF)))),
-        contentAlignment = Alignment.TopCenter,
-    ){
-        Column(){
-            Spacer(modifier = Modifier.height(80.dp))
-            TopInformationCard(gradinetBrush = Brush.horizontalGradient(colors = listOf(Color(0xFFD9F0FF),
-                Color(0xFFF2F7FB))))
-            Spacer(modifier = Modifier.height(50.dp))
-            TimeBar()
-            Spacer(modifier = Modifier.height(50.dp))
-            CenterInformation()
-            Spacer(modifier = Modifier.height(50.dp))
-            PatientInformationList(navController = navController)
-        }
-    }
-
-}
+//@Composable
+//fun HomeFragmentPage(navController: NavController){
+//    Box(
+//        modifier = Modifier.fillMaxSize().background(brush = Brush.verticalGradient(colors = listOf(Color(0xFFFFFCF7),
+//            Color(0xFFE6F1FF)))),
+//        contentAlignment = Alignment.TopCenter,
+//    ){
+//        Column(){
+//            Spacer(modifier = Modifier.height(80.dp))
+//            TopInformationCard(gradinetBrush = Brush.horizontalGradient(colors = listOf(Color(0xFFD9F0FF),
+//                Color(0xFFF2F7FB))))
+//            Spacer(modifier = Modifier.height(50.dp))
+//            TimeBar()
+//            Spacer(modifier = Modifier.height(50.dp))
+//            CenterInformation()
+//            Spacer(modifier = Modifier.height(50.dp))
+//            PatientInformationList(navController = navController)
+//        }
+//    }
+//}
 
 @Preview(widthDp = 1080, heightDp = 2160)
 @Composable
-fun HomeFragmentPreview(){
+fun HomeFragmentPreview() {
     val mockNavController = rememberNavController()
-//        Scaffold(
-//            bottomBar = { BottomNavBar(navController = rememberNavController()) }
-//        ) { innerPadding ->
-//            Box(Modifier.padding(innerPadding)) {
-                HomeFragmentPage(navController = mockNavController)
-//            }
-//        }
+    Scaffold(
+        bottomBar = { BottomNavBar(navController = rememberNavController()) }
+    ) { innerPadding ->
+        Box(Modifier.padding(innerPadding)) {
+//            HomeFragmentPage(mockNavController)
+        }
     }
+}

@@ -38,40 +38,26 @@ class RecordFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                RecordFragmentPage()
+//                RecordFragmentPage()
             }
         }
     }
 }
 
-@Composable
-fun RecordFragmentPage(){
-    Box(
-        modifier = Modifier.fillMaxSize().background(brush = Brush.verticalGradient(colors = listOf(Color(0xFFFFFCF7),
-            Color(0xFFE6F1FF)))),
-        contentAlignment = Alignment.TopCenter,
-    ){
-        Column(){
-            Spacer(modifier = Modifier.height(80.dp))
-            TopInformationBar()
-            Spacer(modifier = Modifier.height(40.dp))
-            CenterDateBarList()
-            Spacer(modifier = Modifier.height(40.dp))
-            PatientRecordList()
-        }
-    }
-}
-
-
-
-@Preview(widthDp = 1080, heightDp = 2160)
-@Composable
-fun RecordFragmentPagePreview(){
-        Scaffold(
-            bottomBar = { BottomNavBar(navController = rememberNavController()) }
-        ) { innerPadding ->
-            Box(Modifier.padding(innerPadding)) {
-    RecordFragmentPage()
-            }
-        }
-}
+//@Composable
+//fun RecordFragmentPage(){
+//    Box(
+//        modifier = Modifier.fillMaxSize().background(brush = Brush.verticalGradient(colors = listOf(Color(0xFFFFFCF7),
+//            Color(0xFFE6F1FF)))),
+//        contentAlignment = Alignment.TopCenter,
+//    ){
+//        Column(){
+//            Spacer(modifier = Modifier.height(80.dp))
+//            TopInformationBar()
+//            Spacer(modifier = Modifier.height(40.dp))
+//            CenterDateBarList()
+//            Spacer(modifier = Modifier.height(40.dp))
+//            PatientRecordList()
+//        }
+//    }
+//}

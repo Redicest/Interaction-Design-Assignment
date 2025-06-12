@@ -15,45 +15,85 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.medicinecontrolsystem.R
 
+import com.example.medicinecontrolsystem.data.data_Patient
+
+
 @Composable
-fun TopInformationBar(modifier:Modifier = Modifier){
+fun TopInformationBarPageSubmitting(patient: data_Patient, modifier:Modifier = Modifier){
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 80.dp),
+            .padding(horizontal = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ){
-        Text(
-            text = stringResource(R.string.sending_medicine_record),
-            fontWeight = FontWeight.W800,
-            fontSize = 48.sp
-        )
-        Row(){
-            Icon(
-                imageVector = ImageVector.vectorResource(R.drawable.ic_filter),
-                contentDescription = null,
-                modifier = Modifier.size(70.dp).align(Alignment.CenterVertically),
-                tint = Color(0xFF03A9F4)
+        Row{
+            Text(
+                text = stringResource(patient.patientName),
+                fontWeight = FontWeight.W800,
+                fontSize = 20.sp
             )
             Text(
-                text = stringResource(R.string.filter_record),
+                text = stringResource(R.string.whose_medicine_box),
                 fontWeight = FontWeight.W400,
-                fontSize = 36.sp,
-                color = Color(0xFF03A9F4),
-                modifier = Modifier.align(Alignment.CenterVertically)
+                fontSize = 20.sp
             )
         }
 
+        Row(){
+            Text(
+                text = stringResource(patient.patientBedNumber),
+                fontWeight = FontWeight.W400,
+                fontSize = 20.sp,
+                modifier = Modifier.align(Alignment.CenterVertically)
+            )
+        }
     }
 }
 
-@Preview(widthDp = 1080, heightDp = 2160)
+@Composable
+fun TopInformationBarP(modifier:Modifier = Modifier){
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ){
+        Row{
+            Text(
+                text = "王小花",
+                fontWeight = FontWeight.W800,
+                fontSize = 20.sp
+            )
+            Text(
+                text = stringResource(R.string.whose_medicine_box),
+                fontWeight = FontWeight.W400,
+                fontSize = 20.sp
+            )
+        }
+
+        Row(){
+            Text(
+                text = "床号 615",
+                fontWeight = FontWeight.W400,
+                fontSize = 20.sp,
+                modifier = Modifier.align(Alignment.CenterVertically)
+            )
+        }
+    }
+}
+
+@Preview(
+    device = Devices.PIXEL_3A,
+    showSystemUi = true,
+    showBackground = true
+)
 @Composable
 fun TopInformationBarPreview(){
-    TopInformationBar()
+    TopInformationBarP()
 }

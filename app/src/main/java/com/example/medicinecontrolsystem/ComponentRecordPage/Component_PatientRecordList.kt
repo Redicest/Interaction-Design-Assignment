@@ -215,5 +215,4 @@ fun signIfmedicineTaken(isTaken:Boolean, modifier: Modifier = Modifier){
 @Preview(widthDp = 1080, heightDp = 2160)
 @Composable
 fun PatientRecordListPreview(){
-    PatientRecordList()
 }

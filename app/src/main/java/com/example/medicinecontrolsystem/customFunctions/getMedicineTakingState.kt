@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /*
 *函数接口：
@@ -14,7 +15,7 @@ import kotlinx.coroutines.launch
 *
 */
 
-class MedicineTakingStateViewModel : ViewModel() {
+class MedicineTakingStateViewModel @Inject constructor() : ViewModel() {
     // 使用病人ID作为键存储状态
     private val _medicineStates = mutableMapOf<Int, Boolean>()
     private val _statesFlow = MutableStateFlow<Map<Int, Boolean>>(emptyMap())

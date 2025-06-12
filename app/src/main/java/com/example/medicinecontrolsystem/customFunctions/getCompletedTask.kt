@@ -6,9 +6,10 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
-class CompletedTaskViewModel: ViewModel(){
+class CompletedTaskViewModel @Inject constructor() : ViewModel(){
     private val _completedTasks = MutableStateFlow(2)
     private val _totalTasks = MutableStateFlow(7)
 

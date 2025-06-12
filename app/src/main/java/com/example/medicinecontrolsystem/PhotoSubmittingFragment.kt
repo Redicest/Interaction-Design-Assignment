@@ -17,10 +17,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import com.example.medicinecontrolsystem.ComponentPhotoSubmittingPage.TopInformationBarP
+import com.example.medicinecontrolsystem.ComponentPhotoSubmittingPage.CenterImagePart
+import com.example.medicinecontrolsystem.ComponentRecordPage.CenterDateBarList
+import com.example.medicinecontrolsystem.ComponentRecordPage.PatientRecordList
 
 class PhotoSubmittingFragment : Fragment() {
     override fun onCreateView(
@@ -30,9 +35,9 @@ class PhotoSubmittingFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                    PhotoSubmittingPage(
-                        onBackClick = { findNavController().popBackStack() }
-                    )
+                PhotoSubmittingPage(
+                    onBackClick = { findNavController().popBackStack() }
+                )
             }
         }
     }
@@ -73,8 +78,38 @@ fun PhotoSubmittingPage(onBackClick: () -> Unit) {
     }
 }
 
-@Preview(widthDp = 1080, heightDp = 2160)
+@Composable
+fun PhotoSubmittingPageP(){
+    Box(
+        modifier = Modifier.fillMaxSize().background(color = Color.White),
+        contentAlignment = Alignment.TopCenter,
+    ){
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.TopCenter)
+        ){
+
+            Spacer(modifier = Modifier.padding(top = 40.dp))
+            TopInformationBarP()
+
+        }
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+        ){
+            CenterImagePart()
+        }
+
+    }
+}
+
+@Preview(
+    device = Devices.PIXEL_3A,
+    showSystemUi = true,
+    showBackground = true)
 @Composable
 fun PhotoSubmittingPagePreview(){
-    PhotoSubmittingPage(onBackClick = {})
+    PhotoSubmittingPageP()
 }

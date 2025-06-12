@@ -45,6 +45,8 @@ dependencies {
     val nav_version1 = "2.7.7"
     implementation ("androidx.navigation:navigation-fragment-ktx:$nav_version1")
     implementation ("androidx.navigation:navigation-ui-ktx:$nav_version1")
+    implementation ("com.google.dagger:hilt-android:2.48")
+    implementation ("androidx.hilt:hilt-navigation-compose:1.1.0")
 
     // Compose 集成
     implementation ("androidx.navigation:navigation-compose:$nav_version1")

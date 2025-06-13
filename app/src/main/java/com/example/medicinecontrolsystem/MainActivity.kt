@@ -23,11 +23,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -184,33 +186,64 @@ fun HomeScreen(navController: NavController){
     val completedTaskViewModel: CompletedTaskViewModel = hiltViewModel()
     val medicineTakingStateViewModel: MedicineTakingStateViewModel = hiltViewModel()
 
+    // 获取屏幕尺寸
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp.dp
+    val screenWidth = configuration.screenWidthDp.dp
+    val baseUnit = min(screenHeight, screenWidth) / 40f
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(brush = Brush.verticalGradient(colors = listOf(Color(0xFFFFFCF7),
-                Color(0xFFE6F1FF)))),
-        contentAlignment = Alignment.TopCenter,
-    ){
-        Column(){
-            Spacer(modifier = Modifier.height(80.dp))
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFFFFFCF7),
+                        Color(0xFFE6F1FF)
+                    )
+                )
+            )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = baseUnit * 1.5f)
+        ) {
             TopInformationCard(
-                gradinetBrush = Brush.horizontalGradient(colors = listOf(Color(0xFFD9F0FF),
-                    Color(0xFFF2F7FB))),
+                gradinetBrush = Brush.horizontalGradient(
+                    colors = listOf(
+                        Color(0xFFD9F0FF),
+                        Color(0xFFF2F7FB)
+                    )
+                ),
                 systemTimeViewModel = timeViewModel,
-                completedTaskViewModel = completedTaskViewModel
+                completedTaskViewModel = completedTaskViewModel,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(baseUnit * 20f)
             )
-            Spacer(modifier = Modifier.height(50.dp))
+            Spacer(modifier = Modifier.height(baseUnit * 0.5f))
             TimeBar(
-                timeBarViewModel = timeBarViewModel
+                timeBarViewModel = timeBarViewModel,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(baseUnit * 3.3f)
             )
-            Spacer(modifier = Modifier.height(50.dp))
+            Spacer(modifier = Modifier.height(baseUnit * 0.5f))
             CenterInformation(
-                centerInformationViewModel = timeViewModel
+                centerInformationViewModel = timeViewModel,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(baseUnit * 3f)
             )
-            Spacer(modifier = Modifier.height(50.dp))
+            Spacer(modifier = Modifier.height(baseUnit * 0.5f))
             PatientInformationList(
                 navController = navController,
-                medicineTakingStateViewModel = medicineTakingStateViewModel
+                medicineTakingStateViewModel = medicineTakingStateViewModel,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                baseUnit = baseUnit
             )
         }
     }

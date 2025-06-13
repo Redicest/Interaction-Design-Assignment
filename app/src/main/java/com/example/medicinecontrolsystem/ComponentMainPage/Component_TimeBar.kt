@@ -7,12 +7,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.getValue
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -47,34 +49,39 @@ fun TimeBar(
         stringResource(R.string.time_evening),
         stringResource(R.string.time_beforeSleep)
     )
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
+    Box(
         modifier = modifier.fillMaxWidth()
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 100.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+        // 添加细的灰色条
+        Column(
+            modifier = modifier.fillMaxWidth()
+        ){
+            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(2.dp)
+                    .background(Color(0xFFE0E0E0))//0xFFE0E0E0
+            )
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier.fillMaxWidth()
         ) {
-            timeLabels.forEachIndexed { index, label ->
-                TimeBarItem(
-                    text = label,
-                    isSelected = selectedIndex == index,
-                    onClick = { timeBarViewModel.setSelectedIndex(index) }
-                )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                timeLabels.forEachIndexed { index, label ->
+                    TimeBarItem(
+                        text = label,
+                        isSelected = selectedIndex == index,
+                        onClick = { timeBarViewModel.setSelectedIndex(index) }
+                    )
+                }
             }
         }
-
-        // 添加细的灰色条
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(Color(0xFFE0E0E0))//0xFFE0E0E0
-                .padding(top = 8.dp)
-        )
     }
 }
 
@@ -88,27 +95,142 @@ fun TimeBarItem(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .clickable { onClick() }
-            .padding(vertical = 8.dp, horizontal = 4.dp)
     ) {
         // 文本 - 选中时黑色，未选中时灰色
         Text(
             text = text,
             color = if (isSelected) Color.Black else Color(0xFF888888),
-            fontSize = 48.sp,
+            fontSize = 14.sp,
             fontWeight = if (isSelected) MaterialTheme.typography.titleLarge.fontWeight
             else MaterialTheme.typography.bodyMedium.fontWeight
         )
 
-        Spacer(modifier = Modifier.height(4.dp))
+        if(isSelected){
+            Spacer(modifier = Modifier.height(2.dp))
+        } else {
+            Spacer(modifier = Modifier.height(4.dp))
+        }
+
 
         // 下方的条 - 选中时蓝色且变粗，未选中时灰色
-        Box(
+        Card(
+            shape = RoundedCornerShape(5.dp),
             modifier = Modifier
-                .width(100.dp)
-                .height(if (isSelected) 10.dp else 5.dp)
-                .background(if (isSelected) Color(0xFF2196F3) else Color(0xFFE0E0E0))
-                .clip(RoundedCornerShape(10.dp))
+                .width(40.dp)
+                .height(if (isSelected) 5.dp else 2.dp)
+        ){
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(if (isSelected) Color(0xFF2196F3) else Color(0x00E0E0E0)),
 
-        )
+            )
+        }
+
     }
+}
+
+@Composable
+fun TimeBarP(
+    modifier: Modifier = Modifier,
+) {
+
+    // 或者使用可变状态（两种方式都可以）
+    // val selectedIndex = viewModel.altSelectedIndex
+
+    // 定义时间标签列表
+    val timeLabels = listOf(
+        stringResource(R.string.time_morning),
+        stringResource(R.string.time_noon),
+        stringResource(R.string.time_evening),
+        stringResource(R.string.time_beforeSleep)
+    )
+    Box(
+        modifier = modifier.fillMaxWidth()
+    ) {
+        // 添加细的灰色条
+        Column(
+            modifier = modifier.fillMaxWidth()
+        ){
+            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(2.dp)
+                    .background(Color(0xFFE0E0E0))//0xFFE0E0E0
+            )
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier.fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                timeLabels.forEachIndexed { index, label ->
+                    TimeBarItemP(
+                        text = label,
+                        isSelected = false,
+                        onClick = { }
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun TimeBarItemP(
+    text: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .clickable { onClick() }
+    ) {
+        // 文本 - 选中时黑色，未选中时灰色
+        Text(
+            text = text,
+            color = if (isSelected) Color.Black else Color(0xFF888888),
+            fontSize = 14.sp,
+            fontWeight = if (isSelected) MaterialTheme.typography.titleLarge.fontWeight
+            else MaterialTheme.typography.bodyMedium.fontWeight
+        )
+
+        if(isSelected){
+            Spacer(modifier = Modifier.height(2.dp))
+        } else {
+            Spacer(modifier = Modifier.height(4.dp))
+        }
+
+
+        // 下方的条 - 选中时蓝色且变粗，未选中时灰色
+        Card(
+            shape = RoundedCornerShape(5.dp),
+            modifier = Modifier
+                .width(40.dp)
+                .height(if (isSelected) 5.dp else 2.dp)
+        ){
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(if (isSelected) Color(0xFF2196F3) else Color(0x00E0E0E0)),
+
+                )
+        }
+
+    }
+}
+
+
+
+
+@Preview
+@Composable
+fun ImeBarPreview(){
+    TimeBarP()
 }

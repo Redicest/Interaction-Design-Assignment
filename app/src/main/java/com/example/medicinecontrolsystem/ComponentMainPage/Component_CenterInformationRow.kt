@@ -26,19 +26,46 @@ fun CenterInformation(
     val timeFormatted by centerInformationViewModel.formattedTime
     Row(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 80.dp),
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
         ){
         Text(
             text = stringResource(R.string.currentTasks),
-            fontSize = 60.sp,
+            fontSize = 14.sp,
             fontWeight = FontWeight.W600
         )
         Text(
             text = timePhrase + timeFormatted,
-            fontSize = 60.sp,
+            fontSize = 14.sp,
             fontWeight = FontWeight.W600
         )
     }
+}
+
+@Composable
+fun CenterInformationP(
+    modifier:Modifier = Modifier,
+){
+    Row(
+        modifier = modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ){
+        Text(
+            text = stringResource(R.string.currentTasks),
+            fontSize = 14.sp,
+            fontWeight = FontWeight.W600
+        )
+        Text(
+            text = "下午 3:20",
+            fontSize = 14.sp,
+            fontWeight = FontWeight.W600
+        )
+    }
+}
+
+@Preview
+@Composable
+fun CenterInformationRowP(){
+    CenterInformationP()
 }

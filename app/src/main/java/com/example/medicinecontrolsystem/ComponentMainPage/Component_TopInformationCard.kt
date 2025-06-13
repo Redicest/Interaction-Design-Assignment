@@ -28,6 +28,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.medicinecontrolsystem.customFunctions.TimeViewModel
 import com.example.medicinecontrolsystem.customFunctions.CompletedTaskViewModel
@@ -46,68 +48,67 @@ fun TopInformationCard(modifier:Modifier = Modifier,
     val totalTasks = completedTaskViewModel.getTaskProgress().second
     val completedTasks = completedTaskViewModel.getTaskProgress().first
 
+    // 获取当前组合的尺寸约束
+    val density = LocalDensity.current
 
-    Box(
-        modifier = modifier.fillMaxWidth(),
-        contentAlignment = Alignment.TopCenter
-    ){
+    Box( //总体Box
+        modifier = modifier
+            .clip(RoundedCornerShape(16.dp))
+    ) {
         Box(
-        ){
-            Card(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(brush = gradinetBrush),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.DateRange,
+                contentDescription = null,
                 modifier = Modifier
-                    .size(width = 1012.dp, height = 474.dp),
-                shape = RoundedCornerShape(25.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                    .fillMaxSize()
-                    .background(brush = gradinetBrush),
-                    contentAlignment = Alignment.TopCenter
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.DateRange,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .align(Alignment.TopEnd) // 右侧中间
-                            .padding(top = 22.dp,end = 55.dp) // 只添加右侧内边距
-                            .size(68.dp)
-                    )
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally, // 添加水平居中
-                        modifier = Modifier.fillMaxWidth() // 添加宽度填充
-                    ){
-                        Spacer(modifier = Modifier.height(37.dp))
-                        Text(
-                            text = formattedDate + "  " + formattedWeekDay,
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.W400,
-                            fontSize = 48.sp,
-                        )
-                    }
-                    Text(
-                        text = formattedTime,
-                        textAlign = TextAlign.Center,
-                        fontSize = 256.sp,
-                        fontWeight = FontWeight.W700,
-                        modifier = Modifier.align(Alignment.TopCenter).padding(top = 80.dp)
-                    )
-                    Text(
-                        text ="已完成"+"${completedTasks}"+"/"+"${totalTasks}",
-                        textAlign = TextAlign.Center,
-                        fontSize = 36.sp,
-                        fontWeight = FontWeight.W400,
-                        modifier = Modifier.align(Alignment.BottomStart).padding(start = 34.dp, bottom = 71.dp)
-                    )
-                    taskProgressBar(
-                        completed = completedTasks,
-                        total = totalTasks,
-                        modifier = Modifier
-                            .fillMaxWidth(0.95f)
-                            .align(Alignment.BottomCenter)
-                            .padding(bottom = 45.dp)
-                    )
-                }
+                    .align(Alignment.TopEnd)
+                    .padding(top = 8.dp, end = 8.dp)
+                    .size(24.dp) // 相对尺寸
+            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
+            ){
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "$formattedDate  $formattedWeekDay",
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.W400,
+                    fontSize = 16.sp, // 固定字体大小（或根据密度调整）
+                )
             }
+            Text(
+                text = formattedTime,
+                textAlign = TextAlign.Center,
+                fontSize = 96.sp, // 固定字体大小
+                fontWeight = FontWeight.W700,
+                modifier = Modifier
+                    .align(Alignment.Center)
+            )
+            Column(
+                modifier = Modifier
+                    .padding(start = 10.dp, bottom = 10.dp)
+                    .align(alignment = Alignment.BottomStart)
+            ){
+                Text(
+                    text ="已完成 $completedTasks/$totalTasks",
+                    textAlign = TextAlign.Center,
+                    fontSize = 14.sp, // 固定字体大小
+                    fontWeight = FontWeight.W400,
+                )
+                Spacer(modifier = Modifier.height(3.dp))
+                taskProgressBar(
+                    completed = completedTasks,
+                    total = totalTasks,
+                    modifier = Modifier
+                        .fillMaxWidth(0.95f)
+                )
+            }
+
         }
     }
 }
@@ -144,4 +145,92 @@ fun taskProgressBar(
             )
         }
     }
+}
+
+//组件：顶部信息卡
+@Composable
+fun TopInformationCardP(modifier:Modifier = Modifier,
+                       gradinetBrush: Brush,
+                       systemTimeViewModel: TimeViewModel = viewModel(),
+){
+    val formattedTime by systemTimeViewModel.formattedTime
+    val formattedDate by systemTimeViewModel.formattedDate
+    val formattedWeekDay by systemTimeViewModel.formattedWeekDay
+
+
+    // 获取当前组合的尺寸约束
+    val density = LocalDensity.current
+
+    Box( //总体Box
+        modifier = modifier
+            .clip(RoundedCornerShape(16.dp))
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(brush = gradinetBrush),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.DateRange,
+                contentDescription = null,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 8.dp, end = 8.dp)
+                    .size(24.dp) // 相对尺寸
+            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
+            ){
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "$formattedDate  $formattedWeekDay",
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.W400,
+                    fontSize = 16.sp, // 固定字体大小（或根据密度调整）
+                )
+            }
+            Text(
+                text = formattedTime,
+                textAlign = TextAlign.Center,
+                fontSize = 96.sp, // 固定字体大小
+                fontWeight = FontWeight.W700,
+                modifier = Modifier
+                    .align(Alignment.Center)
+            )
+            Column(
+                modifier = Modifier
+                    .padding(start = 10.dp, bottom = 10.dp)
+                    .align(alignment = Alignment.BottomStart)
+            ){
+                Text(
+                    text ="已完成 2/7",
+                    textAlign = TextAlign.Center,
+                    fontSize = 14.sp, // 固定字体大小
+                    fontWeight = FontWeight.W400,
+                )
+                Spacer(modifier = Modifier.height(3.dp))
+                taskProgressBar(
+                    completed = 2,
+                    total = 7,
+                    modifier = Modifier
+                        .fillMaxWidth(0.95f)
+                )
+            }
+
+        }
+    }
+}
+
+@Preview
+@Composable
+fun TopInformationCardPreview(){
+    TopInformationCardP(gradinetBrush = Brush.horizontalGradient(
+        colors = listOf(
+            Color(0xFFD9F0FF),
+            Color(0xFFF2F7FB)
+        )
+    )
+    )
 }

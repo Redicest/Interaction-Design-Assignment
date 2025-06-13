@@ -12,11 +12,14 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.material3.Icon
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,6 +37,10 @@ fun BottomNavBar(navController: NavController, modifier : Modifier = Modifier) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
+    val density = LocalDensity.current
+    val context = LocalContext.current
+    val navHeight = with(density){ context.resources.displayMetrics.heightPixels / 21 }.dp
+
     val navItems = listOf(
         NavItem("首页", R.drawable.ic_home, "home"),
         NavItem("记录", R.drawable.ic_record, "record"),
@@ -42,14 +49,14 @@ fun BottomNavBar(navController: NavController, modifier : Modifier = Modifier) {
     Box(modifier = modifier) {
         NavigationBar(
             modifier = Modifier
-                .height(200.dp),
+                .height(navHeight),
             containerColor = Color.White
         ){
             navItems.forEach { item ->
                 NavigationBarItem(
                     icon = {
                         Icon(
-                            modifier= Modifier.size(90.dp),
+                            modifier= Modifier.size(28.dp),
                             imageVector = ImageVector.vectorResource(id = item.icon),
                             contentDescription = item.label
                         )
@@ -57,7 +64,7 @@ fun BottomNavBar(navController: NavController, modifier : Modifier = Modifier) {
                     label = {
                         Text(
                             item.label,
-                            fontSize = 45.sp,
+                            fontSize = 18.sp,
                             fontWeight = FontWeight.W600
                         ) },
                     selected = currentRoute == item.route,

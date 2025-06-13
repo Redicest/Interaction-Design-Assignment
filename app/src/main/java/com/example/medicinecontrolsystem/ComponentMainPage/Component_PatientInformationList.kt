@@ -45,6 +45,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.material.icons.rounded.Create
 import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import androidx.navigation.NavController
 import com.example.medicinecontrolsystem.R
 
@@ -56,15 +59,20 @@ import com.example.medicinecontrolsystem.customFunctions.MedicineTakingStateView
 fun PatientInformationList(
     modifier:Modifier = Modifier,
     navController: NavController ?= null,
-    medicineTakingStateViewModel: MedicineTakingStateViewModel
+    medicineTakingStateViewModel: MedicineTakingStateViewModel,
+    baseUnit: Dp // 新增基础单位参数
+){
+    LazyColumn(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(baseUnit * 0.5f) // 项之间添加间距
     ){
-    LazyColumn {
         items(patients) {
             PatientInformationItem(
                 patient = it,
-                navController= navController,
-                viewModel = medicineTakingStateViewModel
-                )
+                navController = navController,
+                viewModel = medicineTakingStateViewModel,
+                baseUnit = baseUnit // 传递基础单位
+            )
         }
     }
 }
@@ -74,7 +82,8 @@ fun PatientInformationItem(
     patient: data_Patient,
     modifier: Modifier = Modifier,
     viewModel: MedicineTakingStateViewModel,
-    navController: NavController ?= null
+    navController: NavController? = null,
+    baseUnit: Dp // 新增基础单位参数
 ) {
     // 观察该病人的状态变化
     val medicineState by viewModel.statesFlow.collectAsState()
@@ -87,13 +96,12 @@ fun PatientInformationItem(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 50.dp, vertical = 15.dp)
     ) {
         // Card1 - 主卡片
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(150.dp)
+                .height(baseUnit * 8f) // 使用基础单位计算高度
                 .clickable { expanded.value = !expanded.value },
             shape = RoundedCornerShape(16.dp),
         ) {
@@ -102,26 +110,33 @@ fun PatientInformationItem(
                     .fillMaxSize()
                     .background(color = Color.White)
             ) {
-                Row(modifier = Modifier.fillMaxSize()) {
-                    Spacer(modifier = Modifier.width(30.dp))
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     PatientImage(
                         patient.imageResourceId,
-                        modifier = modifier.align(Alignment.CenterVertically)
+                        modifier = Modifier
+                            .size(baseUnit * 6f) // 使用基础单位
+                            .padding(start = baseUnit)
                     )
-                    Spacer(modifier = Modifier.width(40.dp))
+
                     PatientText(
                         patient.patientName,
                         patient.patientBedNumber,
-                        modifier = Modifier.align(Alignment.CenterVertically)
+                        baseUnit = baseUnit, // 传递基础单位
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(start = baseUnit),
                     )
-                }
-                Row(modifier = Modifier.align(Alignment.CenterEnd)) {
+
                     Column(
                         horizontalAlignment = Alignment.End,
+                        modifier = Modifier.padding(end = baseUnit)
                     ) {
                         Card(
                             shape = RoundedCornerShape(30.dp),
-                            modifier = Modifier.size(width = 150.dp, height = 70.dp),
+                            modifier = Modifier.size(width = baseUnit * 5f, height = baseUnit * 2.7f),
                         ) {
                             Box(
                                 modifier = Modifier
@@ -138,33 +153,33 @@ fun PatientInformationItem(
                                         else R.string.not_taking_medicine
                                     ),
                                     textAlign = TextAlign.Center,
-                                    fontSize = 40.sp,
+                                    fontSize = (baseUnit.value * 1.3).sp, // 相对字体大小
                                     color = Color(0xFFFFFFFF)
                                 )
                             }
                         }
+                        Spacer(modifier = Modifier.height(baseUnit * 0.2f))
                         Text(
                             text = stringResource(R.string.medicine_box),
-                            fontSize = 40.sp,
+                            fontSize = (baseUnit.value * 1.3).sp, // 相对字体大小
                             fontWeight = FontWeight.W400
                         )
                     }
-                    Spacer(modifier = Modifier.width(30.dp))
                 }
             }
         }
 
         // Card2 - 可展开的卡片
         AnimatedVisibility(
-            visible = expanded.value,
-//            visible = true, // 调试用
+//            visible = expanded.value,
+            visible = true,
             enter = slideInVertically(animationSpec = tween(300)) { fullHeight -> fullHeight },
             exit = slideOutVertically(animationSpec = tween(300)) { fullHeight -> fullHeight }
         ) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(150.dp),
+                    .height(baseUnit * 3.5f), // 使用基础单位
                 shape = RoundedCornerShape(16.dp),
             ) {
                 Box(
@@ -173,54 +188,55 @@ fun PatientInformationItem(
                         .background(color = Color(0xFFD9F0FF))
                 ) {
                     Row(
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
                             .align(Alignment.Center),
-                        horizontalArrangement = Arrangement.SpaceBetween,
+                        horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Row(
-                            verticalAlignment = Alignment.CenterVertically
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.clickable {
+                                navController?.navigate("photo_submit")
+                            }
                         ) {
                             Icon(
                                 Icons.Rounded.Create,
                                 contentDescription = null,
-                                modifier = Modifier
-                                    .padding(start = 50.dp)
-                                    .size(50.dp)
-                                    .clickable{
-                                        navController?.navigate("photo_submit")
-                                    }
+                                modifier = Modifier.size(baseUnit * 1.5f)
                             )
                             Text(
                                 text = stringResource(R.string.additional_inormation),
-                                fontSize = 40.sp,
+                                fontSize = (baseUnit.value * 1.2).sp,
                                 fontWeight = FontWeight.W400,
-                                modifier = Modifier.padding(start = 20.dp)
+                                modifier = Modifier.padding(start = baseUnit * 0.5f)
                             )
                         }
 
                         // 添加白色细竖线
                         Box(
                             modifier = Modifier
-                                .width(5.dp)
-                                .height(100.dp)
+                                .width(2.dp)
+                                .height(baseUnit * 2f)
                                 .background(Color.White)
-                                .align(Alignment.CenterVertically)
                         )
 
                         Row(
-                            verticalAlignment = Alignment.CenterVertically
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.clickable {
+                                // 扫描检查操作
+                            }
                         ) {
                             Text(
                                 text = stringResource(R.string.scanning_check),
-                                fontSize = 40.sp,
+                                fontSize = (baseUnit.value * 1.2).sp,
                                 fontWeight = FontWeight.W400,
-                                modifier = Modifier.padding(end = 20.dp)
+                                modifier = Modifier.padding(end = baseUnit * 0.5f)
                             )
                             Icon(
                                 Icons.Rounded.PlayArrow,
                                 contentDescription = null,
-                                modifier = Modifier.padding(end = 50.dp).size(50.dp)
+                                modifier = Modifier.size(baseUnit * 2f)
                             )
                         }
                     }
@@ -236,7 +252,7 @@ fun PatientImage(
     modifier: Modifier=Modifier
 ){
     Image(
-        modifier = modifier.size(100.dp),
+        modifier = modifier,
         painter = painterResource(patientImage),
         contentDescription = null
     )
@@ -246,20 +262,22 @@ fun PatientImage(
 fun PatientText(
     @StringRes patientName:Int,
     @StringRes patientBedNumber:Int,
+    baseUnit: Dp, // 新增基础单位参数
     modifier:Modifier = Modifier
-    ){
+){
     Column(
         modifier = modifier
     ){
         Text(
             text = stringResource(patientName),
             fontWeight = FontWeight.W600,
-            fontSize = 40.sp
+            fontSize = (baseUnit.value * 1.6).sp // 相对字体大小
         )
+        Spacer(modifier = Modifier.height(baseUnit * 0.3f))
         Text(
             text = stringResource(patientBedNumber),
             fontWeight = FontWeight.W400,
-            fontSize = 40.sp
+            fontSize = (baseUnit.value * 1.2).sp // 相对字体大小
         )
     }
 }

@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -29,7 +30,8 @@ import com.example.medicinecontrolsystem.customFunctions.TimeViewModel
 @Composable
 fun CenterDateBarList(
     timeViewModel: TimeViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    baseUnit: Dp // 添加基础单位参数
 ) {
     // 获取当前日期
     val currentDate by remember { derivedStateOf { timeViewModel.getCurrentDate() } }
@@ -58,16 +60,17 @@ fun CenterDateBarList(
             state = listState,
             modifier = Modifier
                 .fillMaxWidth()
-                .offset(y = (-5).dp), // 上移覆盖背景条
+                .offset(y = (-baseUnit * 0.125f)), // 上移覆盖背景条
             horizontalArrangement = Arrangement.Center,
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+            contentPadding = PaddingValues(horizontal = baseUnit * 0.4f, vertical = baseUnit * 0.2f)
         ) {
             itemsIndexed(dateList) { index, item ->
                 CenterDateBarItem(
                     dateItem = item,
                     isSelected = (index == selectedIndex),
                     onClick = { selectedIndex = index },
-                    modifier = Modifier.padding(horizontal = 10.dp)
+                    baseUnit = baseUnit, // 传递基础单位
+                    modifier = Modifier.padding(horizontal = baseUnit * 0.25f)
                 )
             }
         }
@@ -79,6 +82,7 @@ fun CenterDateBarItem(
     dateItem: data_Date,
     isSelected: Boolean,
     onClick: () -> Unit,
+    baseUnit: Dp, // 添加基础单位参数
     modifier: Modifier = Modifier
 ) {
     // 定义渐变画笔（选中状态使用）
@@ -94,9 +98,9 @@ fun CenterDateBarItem(
     ) {
         Card(
             modifier = modifier
-                .size(width = 120.dp, height = 160.dp)
+                .size(width = baseUnit * 5f, height = baseUnit * 7f) // 相对尺寸
                 .clickable { onClick() },
-            shape = RoundedCornerShape(16.dp)
+            shape = RoundedCornerShape(baseUnit * 0.4f) // 相对圆角
         ) {
             // 使用 when 表达式处理不同类型的背景
             when (backgroundColor) {
@@ -107,7 +111,7 @@ fun CenterDateBarItem(
                             .background(brush = backgroundColor as Brush),
                         contentAlignment = Alignment.Center
                     ) {
-                        DateTextContent(dateItem, textColor)
+                        DateTextContent(dateItem, textColor, baseUnit) // 传递基础单位
                     }
                 }
 
@@ -118,54 +122,53 @@ fun CenterDateBarItem(
                             .background(color = backgroundColor as Color),
                         contentAlignment = Alignment.Center
                     ) {
-                        DateTextContent(dateItem, textColor)
+                        DateTextContent(dateItem, textColor, baseUnit) // 传递基础单位
                     }
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(baseUnit * 0.45f))
 
         // 下方的条 - 选中时蓝色且变粗，未选中时透明（覆盖在背景条上）
         Box(
             modifier = Modifier
-                .width(100.dp)
-                .height(if (isSelected) 10.dp else 5.dp)
+                .width(baseUnit * 4f) // 相对宽度
+                .height(if (isSelected) baseUnit * 0.25f else baseUnit * 0.125f) // 相对高度
                 .background(
                     if (isSelected) Color(0xFF2196F3) else Color.Transparent, // 未选中时透明
-                    RoundedCornerShape(20.dp)
+                    RoundedCornerShape(baseUnit * 0.5f) // 相对圆角
                 )
-                .clip(RoundedCornerShape(20.dp))
+                .clip(RoundedCornerShape(baseUnit * 0.5f))
         )
     }
 }
 
 // 提取文本内容为单独函数
 @Composable
-private fun DateTextContent(dateItem: data_Date, textColor: Color) {
+private fun DateTextContent(dateItem: data_Date, textColor: Color, baseUnit: Dp) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = dateItem.dayOfWeek,
             color = textColor,
-            fontSize = 36.sp,
+            fontSize = (baseUnit.value * 1.3).sp, // 相对字体大小
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(baseUnit * 0.2f))
 
         Text(
             text = dateItem.dayOfMonth,
             color = textColor,
-            fontSize = 36.sp,
+            fontSize = (baseUnit.value * 1.3).sp, // 相对字体大小
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         )
     }
 }
-
 
 private fun generateDateList(
     currentYear: Int,

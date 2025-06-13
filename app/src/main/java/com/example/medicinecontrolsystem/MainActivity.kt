@@ -251,29 +251,29 @@ fun HomeScreen(navController: NavController){
 
 @Composable
 fun RecordScreen(){
-    // 获取 ViewModel 实例
-    val timeViewModel: TimeViewModel = viewModel()
-    val medicineTakingStateViewModel: MedicineTakingStateViewModel = hiltViewModel()
-
-    Box(
-        modifier = Modifier.fillMaxSize().background(brush = Brush.verticalGradient(colors = listOf(Color(0xFFFFFCF7),
-            Color(0xFFE6F1FF)))),
-        contentAlignment = Alignment.TopCenter,
-    ){
-        Column(){
-            Spacer(modifier = Modifier.height(80.dp))
-            TopInformationBar()
-            Spacer(modifier = Modifier.height(40.dp))
-            CenterDateBarList(
-                timeViewModel = timeViewModel
-            )
-            Spacer(modifier = Modifier.height(40.dp))
-            PatientRecordList(
-                viewModel = medicineTakingStateViewModel,
-                systemTimeViewModel = timeViewModel
-            )
-        }
-    }
+//    // 获取 ViewModel 实例
+//    val timeViewModel: TimeViewModel = viewModel()
+//    val medicineTakingStateViewModel: MedicineTakingStateViewModel = hiltViewModel()
+//
+//    Box(
+//        modifier = Modifier.fillMaxSize().background(brush = Brush.verticalGradient(colors = listOf(Color(0xFFFFFCF7),
+//            Color(0xFFE6F1FF)))),
+//        contentAlignment = Alignment.TopCenter,
+//    ){
+//        Column(){
+//            Spacer(modifier = Modifier.height(80.dp))
+//            TopInformationBar()
+//            Spacer(modifier = Modifier.height(40.dp))
+//            CenterDateBarList(
+//                timeViewModel = timeViewModel
+//            )
+//            Spacer(modifier = Modifier.height(40.dp))
+//            PatientRecordList(
+//                viewModel = medicineTakingStateViewModel,
+//                systemTimeViewModel = timeViewModel
+//            )
+//        }
+//    }
 }
 
 @Composable

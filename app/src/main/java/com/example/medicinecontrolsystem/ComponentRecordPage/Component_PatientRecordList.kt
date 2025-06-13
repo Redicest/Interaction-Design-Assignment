@@ -36,6 +36,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -48,25 +49,30 @@ import com.example.medicinecontrolsystem.data.data_Patient
 fun PatientRecordList(
     modifier:Modifier = Modifier,
     viewModel: MedicineTakingStateViewModel,
-    systemTimeViewModel: TimeViewModel
+    systemTimeViewModel: TimeViewModel,
+    baseUnit: Dp // 新增基础单位参数
+){
+    LazyColumn(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(baseUnit * 0.5f) // 添加项间距
     ){
-    LazyColumn{
         items(patients) {
             PatientRecordItem(
                 patient = it,
                 viewModel = viewModel,
-                systemTimeViewModel = systemTimeViewModel
+                systemTimeViewModel = systemTimeViewModel,
+                baseUnit = baseUnit // 传递基础单位
             )
         }
     }
 }
-
 @Composable
 fun PatientRecordItem(
     patient: data_Patient,
     modifier: Modifier = Modifier,
     viewModel: MedicineTakingStateViewModel,
-    systemTimeViewModel: TimeViewModel
+    systemTimeViewModel: TimeViewModel,
+    baseUnit: Dp // 新增基础单位参数
 ){
     // 观察该病人的状态变化
     val medicineState by viewModel.statesFlow.collectAsState()
@@ -77,12 +83,12 @@ fun PatientRecordItem(
     val formattedWeekDay by systemTimeViewModel.formattedWeekDay
 
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .padding(start = 50.dp, end = 50.dp, bottom = 20.dp)
-            .height(600.dp),
-        shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+            .padding(horizontal = baseUnit * 1.2f, vertical = baseUnit * 0.5f)
+            .height(baseUnit * 20f),
+        shape = RoundedCornerShape(baseUnit),
+        elevation = CardDefaults.cardElevation(defaultElevation = baseUnit * 0.4f)
     ){
         Box(
             modifier = Modifier
@@ -97,51 +103,52 @@ fun PatientRecordItem(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(170.dp)
+                    .height(baseUnit * 4.5f)
                     .background(Color.Black.copy(alpha = 0.5f))
                     .align(Alignment.BottomCenter)
             )
             Row(
                 modifier = Modifier
                     .align(alignment = Alignment.BottomStart)
-                    .padding(bottom = 30.dp)
+                    .padding(bottom = baseUnit * 0.75f)
             ){
                 Row(
                     verticalAlignment = Alignment.Bottom
                 ){
                     PatientImage(
                         patient.imageResourceId,
-                        modifier = Modifier.padding(horizontal = 20.dp)
+                        modifier = Modifier.padding(horizontal = baseUnit * 0.5f)
                     )
                     PatientText(
                         patient.patientName,
                         patient.patientBedNumber,
                         formattedDate,
                         formattedTime,
+                        baseUnit = baseUnit // 传递基础单位
                     )
                 }
             }
             Row(
                 modifier = Modifier
                     .align(alignment = Alignment.BottomEnd)
-                    .padding(end = 20.dp, bottom = 50.dp)
+                    .padding(end = baseUnit * 0.5f, bottom = baseUnit * 1.25f)
             ){
                 signIfmedicineTaken(
                     isTaken = isTaken,
+                    baseUnit = baseUnit, // 传递基础单位
                     modifier = Modifier.align(Alignment.CenterVertically)
                 )
             }
         }
     }
 }
-
 @Composable
 fun PatientImage(
     @DrawableRes patientImage:Int,
     modifier: Modifier=Modifier
 ){
     Image(
-        modifier = modifier.size(170.dp),
+        modifier = modifier.size(50.dp), // 保持相对固定，或改为相对尺寸
         painter = painterResource(patientImage),
         contentDescription = null
     )
@@ -153,6 +160,7 @@ fun PatientText(
     @StringRes patientBedNumber:Int,
     dateString: String,
     timeString: String,
+    baseUnit: Dp, // 新增基础单位参数
     modifier:Modifier = Modifier
 ){
     Column(
@@ -161,14 +169,14 @@ fun PatientText(
         Row(){
             Text(
                 text = stringResource(patientName),
-                fontSize = 48.sp,
+                fontSize = (baseUnit.value * 1.2).sp, // 相对字体大小
                 fontWeight = FontWeight.W600,
                 color = Color.White
             )
-            Spacer(modifier = Modifier.width(25.dp))
+            Spacer(modifier = Modifier.width(baseUnit * 0.6f))
             Text(
                 text = stringResource(patientBedNumber),
-                fontSize = 48.sp,
+                fontSize = (baseUnit.value * 1.2).sp, // 相对字体大小
                 fontWeight = FontWeight.W600,
                 color = Color.White
             )
@@ -176,7 +184,7 @@ fun PatientText(
         Row(){
             Text(
                 text = dateString + timeString,
-                fontSize = 38.sp,
+                fontSize = (baseUnit.value * 0.95).sp, // 相对字体大小
                 fontWeight = FontWeight.W400,
                 color = Color.White
             )
@@ -185,10 +193,10 @@ fun PatientText(
 }
 
 @Composable
-fun signIfmedicineTaken(isTaken:Boolean, modifier: Modifier = Modifier){
+fun signIfmedicineTaken(isTaken:Boolean, baseUnit: Dp, modifier: Modifier = Modifier){
     Card(
-        shape = RoundedCornerShape(30.dp),
-        modifier = modifier.size(width = 150.dp, height = 70.dp),
+            shape = RoundedCornerShape(30.dp),
+            modifier = Modifier.size(width = baseUnit * 5f, height = baseUnit * 2.7f)
     ) {
         Box(
             modifier = Modifier
@@ -205,7 +213,7 @@ fun signIfmedicineTaken(isTaken:Boolean, modifier: Modifier = Modifier){
                     else R.string.not_taking_medicine
                 ),
                 textAlign = TextAlign.Center,
-                fontSize = 40.sp,
+                fontSize = (baseUnit.value * 1.3).sp, // 相对字体大小
                 color = Color(0xFFFFFFFF)
             )
         }

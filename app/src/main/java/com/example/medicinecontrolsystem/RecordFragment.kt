@@ -76,12 +76,105 @@ class RecordFragment : Fragment() {
 //        }
 //    }
 //}
+
+
+
+
+
+//@Composable
+//fun HomeFragmentPage(navController: NavController) {
+//    // 获取 ViewModel 实例
+//    val timeViewModel: TimeViewModel = viewModel()
+//    val timeBarViewModel: TimeBarViewModel = viewModel()
+//    val completedTaskViewModel: CompletedTaskViewModel = hiltViewModel()
+//    val medicineTakingStateViewModel: MedicineTakingStateViewModel = hiltViewModel()
+//
+//    // 获取屏幕尺寸
+//    val configuration = LocalConfiguration.current
+//    val screenHeight = configuration.screenHeightDp.dp
+//    val screenWidth = configuration.screenWidthDp.dp
+//    val baseUnit = min(screenHeight, screenWidth) / 40f
+//
+//    Box(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .background(
+//                brush = Brush.verticalGradient(
+//                    colors = listOf(
+//                        Color(0xFFFFFCF7),
+//                        Color(0xFFE6F1FF)
+//                    )
+//                )
+//            )
+//    ) {
+//        Column(
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .padding(horizontal = baseUnit * 1.5f)
+//        ) {
+//            TopInformationCard(
+//                gradinetBrush = Brush.horizontalGradient(
+//                    colors = listOf(
+//                        Color(0xFFD9F0FF),
+//                        Color(0xFFF2F7FB)
+//                    )
+//                ),
+//                systemTimeViewModel = timeViewModel,
+//                completedTaskViewModel = completedTaskViewModel,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(baseUnit * 20f)
+//            )
+//            Spacer(modifier = Modifier.height(baseUnit * 0.5f))
+//            TimeBar(
+//                timeBarViewModel = timeBarViewModel,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(baseUnit * 3.3f)
+//            )
+//            Spacer(modifier = Modifier.height(baseUnit * 0.5f))
+//            CenterInformation(
+//                centerInformationViewModel = timeViewModel,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(baseUnit * 3f)
+//            )
+//            Spacer(modifier = Modifier.height(baseUnit * 0.5f))
+//            PatientInformationList(
+//                navController = navController,
+//                medicineTakingStateViewModel = medicineTakingStateViewModel,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .weight(1f),
+//                baseUnit = baseUnit
+//            )
+//        }
+//    }
+//}
+//
+//
+//@Preview(
+//    device = Devices.PIXEL_3A,
+//    showSystemUi = true,
+//    showBackground = true
+//)
+//@Composable
+//fun HomeFragmentPreview() {
+//    val mockNavController = rememberNavController()
+//    Scaffold(
+//        bottomBar = { BottomNavBar(navController = rememberNavController()) }
+//    ) { innerPadding ->
+//        Box(Modifier.padding(innerPadding)) {
+//            HomeFragmentPage(mockNavController)
+//        }
+//    }
+//}
+
+
 @Composable
-fun HomeFragmentPage(navController: NavController) {
+fun RecordPage() {
     // 获取 ViewModel 实例
     val timeViewModel: TimeViewModel = viewModel()
-    val timeBarViewModel: TimeBarViewModel = viewModel()
-    val completedTaskViewModel: CompletedTaskViewModel = hiltViewModel()
     val medicineTakingStateViewModel: MedicineTakingStateViewModel = hiltViewModel()
 
     // 获取屏幕尺寸
@@ -100,53 +193,41 @@ fun HomeFragmentPage(navController: NavController) {
                         Color(0xFFE6F1FF)
                     )
                 )
-            )
+            ),
+        contentAlignment = Alignment.TopCenter,
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .padding(horizontal = baseUnit * 1.5f)
         ) {
-            TopInformationCard(
-                gradinetBrush = Brush.horizontalGradient(
-                    colors = listOf(
-                        Color(0xFFD9F0FF),
-                        Color(0xFFF2F7FB)
-                    )
-                ),
+            Spacer(modifier = Modifier.height(baseUnit * 3f))
+            TopInformationBar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(baseUnit * 4f),
+                baseUnit = baseUnit
+            )
+            Spacer(modifier = Modifier.height(baseUnit))
+            CenterDateBarList(
+                timeViewModel = timeViewModel,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(baseUnit * 12f),
+                baseUnit = baseUnit
+            )
+            Spacer(modifier = Modifier.height(baseUnit))
+            PatientRecordList(
+                viewModel = medicineTakingStateViewModel,
                 systemTimeViewModel = timeViewModel,
-                completedTaskViewModel = completedTaskViewModel,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(baseUnit * 20f)
-            )
-            Spacer(modifier = Modifier.height(baseUnit * 0.5f))
-            TimeBar(
-                timeBarViewModel = timeBarViewModel,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(baseUnit * 3.3f)
-            )
-            Spacer(modifier = Modifier.height(baseUnit * 0.5f))
-            CenterInformation(
-                centerInformationViewModel = timeViewModel,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(baseUnit * 3f)
-            )
-            Spacer(modifier = Modifier.height(baseUnit * 0.5f))
-            PatientInformationList(
-                navController = navController,
-                medicineTakingStateViewModel = medicineTakingStateViewModel,
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
-                baseUnit = baseUnit
+                baseUnit = baseUnit // 传递基础单位
             )
         }
     }
 }
-
 
 @Preview(
     device = Devices.PIXEL_3A,
@@ -154,13 +235,6 @@ fun HomeFragmentPage(navController: NavController) {
     showBackground = true
 )
 @Composable
-fun HomeFragmentPreview() {
-    val mockNavController = rememberNavController()
-    Scaffold(
-        bottomBar = { BottomNavBar(navController = rememberNavController()) }
-    ) { innerPadding ->
-        Box(Modifier.padding(innerPadding)) {
-            HomeFragmentPage(mockNavController)
-        }
-    }
+fun RecordFragmentPreview() {
+    RecordPage()
 }

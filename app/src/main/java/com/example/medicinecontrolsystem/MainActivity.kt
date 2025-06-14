@@ -31,7 +31,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -53,15 +52,12 @@ import com.example.medicinecontrolsystem.customFunctions.TimeViewModel
 import com.example.medicinecontrolsystem.data.patients
 import com.example.medicinecontrolsystem.ui.theme.MedicineControlSystemTheme
 
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MedicineControlSystemTheme {
                 val navController = rememberNavController()
-//                val completedTaskVM: CompletedTaskViewModel = hiltViewModel()
-//                val medicineStateVM: MedicineTakingStateViewModel = hiltViewModel()
 
                 Scaffold(
                     bottomBar = {
@@ -183,8 +179,8 @@ fun HomeScreen(navController: NavController){
     // 获取 ViewModel 实例
     val timeViewModel: TimeViewModel = viewModel()
     val timeBarViewModel: TimeBarViewModel = viewModel()
-    val completedTaskViewModel: CompletedTaskViewModel = hiltViewModel()
-    val medicineTakingStateViewModel: MedicineTakingStateViewModel = hiltViewModel()
+    val completedTaskViewModel: CompletedTaskViewModel = viewModel()
+    val medicineTakingStateViewModel: MedicineTakingStateViewModel = viewModel()
 
     // 获取屏幕尺寸
     val configuration = LocalConfiguration.current
@@ -253,7 +249,7 @@ fun HomeScreen(navController: NavController){
 fun RecordScreen(){
     // 获取 ViewModel 实例
     val timeViewModel: TimeViewModel = viewModel()
-    val medicineTakingStateViewModel: MedicineTakingStateViewModel = hiltViewModel()
+    val medicineTakingStateViewModel: MedicineTakingStateViewModel = viewModel()
 
     // 获取屏幕尺寸
     val configuration = LocalConfiguration.current
@@ -315,6 +311,10 @@ fun PhotoSubmittingScreen(patientId: Int?) {
     val screenWidth = configuration.screenWidthDp.dp
     val baseUnit = min(screenHeight, screenWidth) / 40f
 
+    if (patientId == null) {
+        ErrorScreen("无效的患者ID")
+        return
+    }
     // 根据ID查找病人信息
     val patient = remember(patientId) {
         patients.find { it.id == patientId }
@@ -360,6 +360,13 @@ fun PhotoSubmittingScreen(patientId: Int?) {
                 baseUnit = baseUnit
             )
         }
+    }
+}
+
+@Composable
+fun ErrorScreen(message: String) {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Text(text = message, color = Color.Red)
     }
 }
 

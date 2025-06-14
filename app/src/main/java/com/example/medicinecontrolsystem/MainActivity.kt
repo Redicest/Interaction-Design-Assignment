@@ -251,65 +251,115 @@ fun HomeScreen(navController: NavController){
 
 @Composable
 fun RecordScreen(){
-//    // 获取 ViewModel 实例
-//    val timeViewModel: TimeViewModel = viewModel()
-//    val medicineTakingStateViewModel: MedicineTakingStateViewModel = hiltViewModel()
-//
-//    Box(
-//        modifier = Modifier.fillMaxSize().background(brush = Brush.verticalGradient(colors = listOf(Color(0xFFFFFCF7),
-//            Color(0xFFE6F1FF)))),
-//        contentAlignment = Alignment.TopCenter,
-//    ){
-//        Column(){
-//            Spacer(modifier = Modifier.height(80.dp))
-//            TopInformationBar()
-//            Spacer(modifier = Modifier.height(40.dp))
-//            CenterDateBarList(
-//                timeViewModel = timeViewModel
-//            )
-//            Spacer(modifier = Modifier.height(40.dp))
-//            PatientRecordList(
-//                viewModel = medicineTakingStateViewModel,
-//                systemTimeViewModel = timeViewModel
-//            )
-//        }
-//    }
+    // 获取 ViewModel 实例
+    val timeViewModel: TimeViewModel = viewModel()
+    val medicineTakingStateViewModel: MedicineTakingStateViewModel = hiltViewModel()
+
+    // 获取屏幕尺寸
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp.dp
+    val screenWidth = configuration.screenWidthDp.dp
+    val baseUnit = min(screenHeight, screenWidth) / 40f
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFFFFFCF7),
+                        Color(0xFFE6F1FF)
+                    )
+                )
+            ),
+        contentAlignment = Alignment.TopCenter,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = baseUnit * 1.5f)
+        ) {
+            Spacer(modifier = Modifier.height(baseUnit * 3f))
+            TopInformationBar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(baseUnit * 4f),
+                baseUnit = baseUnit
+            )
+            Spacer(modifier = Modifier.height(baseUnit))
+            CenterDateBarList(
+                timeViewModel = timeViewModel,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(baseUnit * 8f),
+                baseUnit = baseUnit
+            )
+            Spacer(modifier = Modifier.height(baseUnit))
+            PatientRecordList(
+                viewModel = medicineTakingStateViewModel,
+                systemTimeViewModel = timeViewModel,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                baseUnit = baseUnit // 传递基础单位
+            )
+        }
+    }
 }
 
 @Composable
 fun PhotoSubmittingScreen(patientId: Int?) {
+    // 获取屏幕尺寸并计算基础单位
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp.dp
+    val screenWidth = configuration.screenWidthDp.dp
+    val baseUnit = min(screenHeight, screenWidth) / 40f
+
     // 根据ID查找病人信息
     val patient = remember(patientId) {
         patients.find { it.id == patientId }
     }
 
-    Box(
-        modifier = Modifier.fillMaxSize().background(color = Color.White),
-        contentAlignment = Alignment.TopCenter,
-    ){
-        Column(
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.White)
+    ) {
+        // 顶部区域
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.TopCenter)
-        ){
+                .weight(0.8f)   // 使用 weight 函数分配空间
+                .align(alignment = Alignment.CenterHorizontally)
 
-            Spacer(modifier = Modifier.padding(top = 40.dp))
-            if(patient != null){
-                TopInformationBarPageSubmitting(patient)
-            } else {
-                Text("未选择")
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.TopCenter)
+            ) {
+                Spacer(modifier = Modifier.height(baseUnit * 4))
+                if (patient != null) {
+                    TopInformationBarPageSubmitting(
+                        patient = patient,
+                        baseUnit = baseUnit
+                    )
+                } else {
+                    Text("未选择")
+                }
             }
-
-
         }
-        Column(
+
+        // 底部区域
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-        ){
-            CenterImagePart()
+                .weight(6f) // 使用 weight 函数分配空间
+        ) {
+            CenterImagePart(
+                baseUnit = baseUnit
+            )
         }
-
     }
 }
 

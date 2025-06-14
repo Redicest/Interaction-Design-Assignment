@@ -2,9 +2,11 @@ package com.example.medicinecontrolsystem.ComponentPhotoSubmittingPage
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +19,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.medicinecontrolsystem.R
@@ -25,37 +28,46 @@ import com.example.medicinecontrolsystem.data.data_Patient
 
 
 @Composable
-fun TopInformationBarPageSubmitting(patient: data_Patient, modifier:Modifier = Modifier){
+fun TopInformationBarPageSubmitting(
+    patient: data_Patient,
+    baseUnit: Dp, // 添加基础单位参数
+    modifier: Modifier = Modifier
+) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp),
+            .padding(horizontal = baseUnit * 1.5f) // 相对水平间距
+            .padding(bottom = baseUnit * 0.5f), // 添加底部间距
         horizontalArrangement = Arrangement.SpaceBetween
-    ){
-        Row{
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(
                 text = stringResource(patient.patientName),
                 fontWeight = FontWeight.W800,
-                fontSize = 20.sp
+                fontSize = (baseUnit.value * 1.6).sp // 相对字体大小
             )
+            Spacer(modifier = Modifier.width(baseUnit * 0.3f))
             Text(
                 text = stringResource(R.string.whose_medicine_box),
                 fontWeight = FontWeight.W400,
-                fontSize = 20.sp
+                fontSize = (baseUnit.value * 1.6).sp // 相对字体大小
             )
         }
 
-        Row(){
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(
                 text = stringResource(patient.patientBedNumber),
                 fontWeight = FontWeight.W400,
-                fontSize = 20.sp,
+                fontSize = (baseUnit.value * 1.6).sp, // 相对字体大小
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
         }
     }
 }
-
 @Composable
 fun TopInformationBarP(modifier:Modifier = Modifier){
     Row(

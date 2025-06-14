@@ -213,7 +213,7 @@ fun RecordPage() {
                 timeViewModel = timeViewModel,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(baseUnit * 12f),
+                    .height(baseUnit * 8f),
                 baseUnit = baseUnit
             )
             Spacer(modifier = Modifier.height(baseUnit))

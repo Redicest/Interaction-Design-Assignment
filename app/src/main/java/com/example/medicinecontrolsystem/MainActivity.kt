@@ -65,7 +65,7 @@ class MainActivity : ComponentActivity() {
                         val navBackStackEntry by navController.currentBackStackEntryAsState()
                         val currentRoute = navBackStackEntry?.destination?.route
 
-                        if (currentRoute != "photo_submit") {
+                        if (currentRoute?.startsWith("photo_submit") != true) {
                             BottomNavBar(navController = navController)
                         }
                     }

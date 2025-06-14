@@ -171,8 +171,8 @@ fun PatientInformationItem(
 
         // Card2 - 可展开的卡片
         AnimatedVisibility(
-//            visible = expanded.value,
-            visible = true,
+            visible = expanded.value,
+            //visible = true,
             enter = slideInVertically(animationSpec = tween(300)) { fullHeight -> fullHeight },
             exit = slideOutVertically(animationSpec = tween(300)) { fullHeight -> fullHeight }
         ) {
@@ -197,7 +197,7 @@ fun PatientInformationItem(
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.clickable {
-                                navController?.navigate("photo_submit")
+                                navController?.navigate("photo_submit/${patient.id}")
                             }
                         ) {
                             Icon(

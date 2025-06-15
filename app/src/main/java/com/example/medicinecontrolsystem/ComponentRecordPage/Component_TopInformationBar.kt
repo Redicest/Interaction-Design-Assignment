@@ -39,7 +39,7 @@ fun TopInformationBar(
         Text(
             text = stringResource(R.string.sending_medicine_record),
             fontWeight = FontWeight.W800,
-            fontSize = (baseUnit.value * 1.2).sp // 相对字体大小
+            fontSize = (baseUnit.value * 1.8).sp // 相对字体大小
         )
         Row(
             verticalAlignment = Alignment.CenterVertically
@@ -47,14 +47,14 @@ fun TopInformationBar(
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_filter),
                 contentDescription = null,
-                modifier = Modifier.size(baseUnit * 1.75f), // 相对图标大小
+                modifier = Modifier.size(baseUnit * 3f), // 相对图标大小
                 tint = Color(0xFF03A9F4)
             )
             Spacer(modifier = Modifier.width(baseUnit * 0.3f))
             Text(
                 text = stringResource(R.string.filter_record),
                 fontWeight = FontWeight.W400,
-                fontSize = (baseUnit.value).sp, // 相对字体大小
+                fontSize = (baseUnit.value * 1.8).sp, // 相对字体大小
                 color = Color(0xFF03A9F4)
             )
         }

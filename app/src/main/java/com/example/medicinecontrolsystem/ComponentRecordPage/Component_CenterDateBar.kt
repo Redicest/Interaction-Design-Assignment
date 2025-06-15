@@ -98,7 +98,7 @@ fun CenterDateBarItem(
     ) {
         Card(
             modifier = modifier
-                .size(width = baseUnit * 5f, height = baseUnit * 7f) // 相对尺寸
+                .size(width = baseUnit * 6f, height = baseUnit * 8f) // 相对尺寸
                 .clickable { onClick() },
             shape = RoundedCornerShape(baseUnit * 0.4f) // 相对圆角
         ) {
@@ -153,7 +153,7 @@ private fun DateTextContent(dateItem: data_Date, textColor: Color, baseUnit: Dp)
         Text(
             text = dateItem.dayOfWeek,
             color = textColor,
-            fontSize = (baseUnit.value * 1.3).sp, // 相对字体大小
+            fontSize = (baseUnit.value * 1.8).sp, // 相对字体大小
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         )
@@ -163,7 +163,7 @@ private fun DateTextContent(dateItem: data_Date, textColor: Color, baseUnit: Dp)
         Text(
             text = dateItem.dayOfMonth,
             color = textColor,
-            fontSize = (baseUnit.value * 1.3).sp, // 相对字体大小
+            fontSize = (baseUnit.value * 1.8).sp, // 相对字体大小
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         )

@@ -103,7 +103,7 @@ fun PatientRecordItem(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(baseUnit * 4.5f)
+                    .height(baseUnit * 5f)
                     .background(Color.Black.copy(alpha = 0.5f))
                     .align(Alignment.BottomCenter)
             )
@@ -169,14 +169,14 @@ fun PatientText(
         Row(){
             Text(
                 text = stringResource(patientName),
-                fontSize = (baseUnit.value * 1.2).sp, // 相对字体大小
+                fontSize = (baseUnit.value * 1.8).sp, // 相对字体大小
                 fontWeight = FontWeight.W600,
                 color = Color.White
             )
             Spacer(modifier = Modifier.width(baseUnit * 0.6f))
             Text(
                 text = stringResource(patientBedNumber),
-                fontSize = (baseUnit.value * 1.2).sp, // 相对字体大小
+                fontSize = (baseUnit.value * 1.8).sp, // 相对字体大小
                 fontWeight = FontWeight.W600,
                 color = Color.White
             )
@@ -184,7 +184,7 @@ fun PatientText(
         Row(){
             Text(
                 text = dateString + timeString,
-                fontSize = (baseUnit.value * 0.95).sp, // 相对字体大小
+                fontSize = (baseUnit.value * 1.3).sp, // 相对字体大小
                 fontWeight = FontWeight.W400,
                 color = Color.White
             )
@@ -196,7 +196,7 @@ fun PatientText(
 fun signIfmedicineTaken(isTaken:Boolean, baseUnit: Dp, modifier: Modifier = Modifier){
     Card(
             shape = RoundedCornerShape(30.dp),
-            modifier = Modifier.size(width = baseUnit * 5f, height = baseUnit * 2.7f)
+            modifier = Modifier.size(width = baseUnit * 7f, height = baseUnit * 2.7f)
     ) {
         Box(
             modifier = Modifier
@@ -213,7 +213,7 @@ fun signIfmedicineTaken(isTaken:Boolean, baseUnit: Dp, modifier: Modifier = Modi
                     else R.string.not_taking_medicine
                 ),
                 textAlign = TextAlign.Center,
-                fontSize = (baseUnit.value * 1.3).sp, // 相对字体大小
+                fontSize = (baseUnit.value * 1.8).sp, // 相对字体大小
                 color = Color(0xFFFFFFFF)
             )
         }

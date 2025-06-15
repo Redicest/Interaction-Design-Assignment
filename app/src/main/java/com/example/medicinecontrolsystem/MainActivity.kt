@@ -73,7 +73,7 @@ class MainActivity : ComponentActivity() {
                         val navBackStackEntry by navController.currentBackStackEntryAsState()
                         val currentRoute = navBackStackEntry?.destination?.route
 
-                        if (currentRoute?.startsWith("photo_submit") != true && currentRoute != "camera") {
+                        if (currentRoute?.startsWith("photo_submit") != true && currentRoute != "camera" && currentRoute != "reminder") {
                             BottomNavBar(navController = navController)
                         }
                     }
@@ -135,6 +135,33 @@ class MainActivity : ComponentActivity() {
                             }
                         ) {
                             RecordScreen()
+                        }
+                        composable(
+                            route = "reminder",
+                            enterTransition = {
+                                slideIntoContainer(
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                                    animationSpec = tween(300)
+                                )
+                            },
+                            exitTransition = {
+                                slideOutOfContainer(
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                                    animationSpec = tween(300)
+                                )
+                            },
+                            popEnterTransition = {
+                                slideIntoContainer(
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                                    animationSpec = tween(300))
+                            },
+                            popExitTransition = {
+                                slideOutOfContainer(
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                                    animationSpec = tween(300))
+                            }
+                        ) {
+                            ReminderScreen()
                         }
                         composable(
                             route = "profile",
@@ -253,7 +280,8 @@ fun HomeScreen(navController: NavController){
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(baseUnit * 20f),
-                baseUnit = baseUnit
+                baseUnit = baseUnit,
+                navController = navController
             )
             Spacer(modifier = Modifier.height(baseUnit * 0.5f))
             TimeBar(
@@ -499,17 +527,17 @@ fun ErrorScreen(message: String) {
 @Composable
 fun totalPreview(){
 //HomeScreen
-//    val mockNavController = rememberNavController()
-//    Scaffold(
-//        bottomBar = { BottomNavBar(navController = rememberNavController()) }
-//    ) { innerPadding ->
-//        Box(Modifier.padding(innerPadding)) {
-//            HomeScreen(mockNavController)
-//        }
-//    }
+    val mockNavController = rememberNavController()
+    Scaffold(
+        bottomBar = { BottomNavBar(navController = rememberNavController()) }
+    ) { innerPadding ->
+        Box(Modifier.padding(innerPadding)) {
+            HomeScreen(mockNavController)
+        }
+    }
 //HomeScreen
 
 //RecordScreen
-    RecordScreen()
+//    RecordScreen()
 //RecordScreen
 }

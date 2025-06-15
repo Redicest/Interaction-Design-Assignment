@@ -1,7 +1,10 @@
 package com.example.medicinecontrolsystem.ComponentMainPage
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -10,8 +13,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.AccessAlarm
 import androidx.compose.material.icons.rounded.DateRange
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
@@ -32,6 +37,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.medicinecontrolsystem.customFunctions.TimeViewModel
 import com.example.medicinecontrolsystem.customFunctions.CompletedTaskViewModel
 
@@ -42,6 +48,7 @@ fun TopInformationCard(modifier:Modifier = Modifier,
                        systemTimeViewModel: TimeViewModel = viewModel(),
                        completedTaskViewModel: CompletedTaskViewModel,
                        baseUnit: Dp,
+                       navController: NavController ?= null,
 ){
     val formattedTime by systemTimeViewModel.formattedTime
     val formattedDate by systemTimeViewModel.formattedDate
@@ -91,15 +98,32 @@ fun TopInformationCard(modifier:Modifier = Modifier,
             )
             Column(
                 modifier = Modifier
-                    .padding(start = 10.dp, bottom = 10.dp)
+                    .padding(start = 10.dp,  bottom = 10.dp)
                     .align(alignment = Alignment.BottomStart)
             ){
-                Text(
-                    text ="已完成 $completedTasks/$totalTasks",
-                    textAlign = TextAlign.Center,
-                    fontSize = (baseUnit.value * 1.8).sp,
-                    fontWeight = FontWeight.W400,
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(end = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ){
+                    Text(
+                        text ="已完成 $completedTasks/$totalTasks",
+                        textAlign = TextAlign.Center,
+                        fontSize = (baseUnit.value * 1.8).sp,
+                        fontWeight = FontWeight.W400,
+                        modifier = Modifier.align(alignment = Alignment.Bottom)
+                    )
+                    Icon(
+                        Icons.Rounded.AccessAlarm,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(baseUnit * 3f)
+                            .clickable {
+                                navController?.navigate("reminder")
+                            },
+                        tint = Color(0xFFFFD700)
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(baseUnit * 0.5f))
                 taskProgressBar(
                     completed = completedTasks,

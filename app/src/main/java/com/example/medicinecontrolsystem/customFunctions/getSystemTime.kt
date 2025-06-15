@@ -8,7 +8,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
-class TimeViewModel : ViewModel() {
+open class TimeViewModel : ViewModel() {
     // 使用 State 而不是 MutableState 对外暴露
     private val _hour = mutableStateOf(0)
     val hour: State<Int> get() = _hour
@@ -32,10 +32,13 @@ class TimeViewModel : ViewModel() {
     val formattedDate: State<String> get() = _formattedDate
 
     private val _formattedTime = mutableStateOf("")
-    val formattedTime: State<String> get() = _formattedTime
+    open val formattedTime: State<String> get() = _formattedTime
 
     private val _formattedWeekDay = mutableStateOf("")
     val formattedWeekDay: State<String> get() = _formattedWeekDay
+
+    private val _formattedYear = mutableStateOf("")
+    val formattedYear: State<String> get() = _formattedYear
 
     private val _timePhrase = mutableStateOf("")
     val timePhrase: State<String> get() = _timePhrase
@@ -63,6 +66,7 @@ class TimeViewModel : ViewModel() {
         _month.value = calendar.get(Calendar.MONTH) + 1
         _day.value = calendar.get(Calendar.DAY_OF_MONTH)
         _formattedDate.value = "${_month.value}月${_day.value}日"
+        _formattedYear.value = "${_year.value}年"
 
         _weekDay.value = calendar.get(Calendar.DAY_OF_WEEK)
         _formattedWeekDay.value = getWeekDayName(_weekDay.value)
@@ -88,7 +92,7 @@ class TimeViewModel : ViewModel() {
     }
 
     // 添加一个获取当前日期的方法
-    fun getCurrentDate(): Triple<Int, Int, Int> {
+    open fun getCurrentDate(): Triple<Int, Int, Int> {
         return Triple(year.value, month.value, day.value)
     }
 }

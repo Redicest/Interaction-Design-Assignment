@@ -17,6 +17,7 @@
     <string name="whose_medicine_box">的药盒</string>
     <string name="adding_photo">添加图片</string>
     <string name="scanning_again">重新扫描</string>
+    <string name="taking_medicine_reminder">送药提醒</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

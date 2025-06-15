@@ -41,6 +41,19 @@ android {
 }
 
 dependencies {
+    // 添加相机和条形码扫描依赖
+    implementation("androidx.camera:camera-core:1.4.0-alpha02")
+    implementation("androidx.camera:camera-camera2:1.4.0-alpha02")
+    implementation("androidx.camera:camera-lifecycle:1.4.0-alpha02")
+    implementation("androidx.camera:camera-view:1.4.0-alpha02")
+    implementation("com.google.mlkit:barcode-scanning:17.2.0")
+
+// ML Kit 条形码扫描
+    implementation("com.google.mlkit:barcode-scanning:17.2.0")
+// 添加协程支持
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+    implementation ("androidx.compose.material:material-icons-extended:1.6.0")
     val nav_version = "2.9.0"
 
     // Jetpack Compose integration

@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.medicinecontrolsystem.customFunctions.TimeViewModel
 import com.example.medicinecontrolsystem.customFunctions.CompletedTaskViewModel
@@ -39,7 +40,8 @@ import com.example.medicinecontrolsystem.customFunctions.CompletedTaskViewModel
 fun TopInformationCard(modifier:Modifier = Modifier,
                        gradinetBrush: Brush,
                        systemTimeViewModel: TimeViewModel = viewModel(),
-                       completedTaskViewModel: CompletedTaskViewModel
+                       completedTaskViewModel: CompletedTaskViewModel,
+                       baseUnit: Dp,
 ){
     val formattedTime by systemTimeViewModel.formattedTime
     val formattedDate by systemTimeViewModel.formattedDate
@@ -48,12 +50,10 @@ fun TopInformationCard(modifier:Modifier = Modifier,
     val totalTasks = completedTaskViewModel.getTaskProgress().second
     val completedTasks = completedTaskViewModel.getTaskProgress().first
 
-    // 获取当前组合的尺寸约束
-    val density = LocalDensity.current
 
     Box( //总体Box
         modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(baseUnit))
     ) {
         Box(
             modifier = Modifier
@@ -67,7 +67,7 @@ fun TopInformationCard(modifier:Modifier = Modifier,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(top = 8.dp, end = 8.dp)
-                    .size(24.dp) // 相对尺寸
+                    .size(baseUnit * 2.5f) // 相对尺寸
             )
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -78,13 +78,13 @@ fun TopInformationCard(modifier:Modifier = Modifier,
                     text = "$formattedDate  $formattedWeekDay",
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.W400,
-                    fontSize = 16.sp, // 固定字体大小（或根据密度调整）
+                    fontSize = (baseUnit.value * 1.8).sp, // 固定字体大小（或根据密度调整）
                 )
             }
             Text(
                 text = formattedTime,
                 textAlign = TextAlign.Center,
-                fontSize = 96.sp, // 固定字体大小
+                fontSize = (baseUnit.value * 10).sp, // 固定字体大小
                 fontWeight = FontWeight.W700,
                 modifier = Modifier
                     .align(Alignment.Center)
@@ -97,10 +97,10 @@ fun TopInformationCard(modifier:Modifier = Modifier,
                 Text(
                     text ="已完成 $completedTasks/$totalTasks",
                     textAlign = TextAlign.Center,
-                    fontSize = 14.sp, // 固定字体大小
+                    fontSize = (baseUnit.value * 1.8).sp,
                     fontWeight = FontWeight.W400,
                 )
-                Spacer(modifier = Modifier.height(3.dp))
+                Spacer(modifier = Modifier.height(baseUnit * 0.5f))
                 taskProgressBar(
                     completed = completedTasks,
                     total = totalTasks,

@@ -37,14 +37,14 @@ import com.example.medicinecontrolsystem.customFunctions.TimeViewModel
 fun TopInformation(
     baseUnit: Dp, // 添加基础单位参数
     modifier: Modifier = Modifier,
-    systemTimeViewModel: TimeViewModel = viewModel()
+    systemTimeViewModel: TimeViewModel
 ){
     val formattedTime by systemTimeViewModel.formattedTime
     val formattedDate by systemTimeViewModel.formattedDate
     val formattedWeekDay by systemTimeViewModel.formattedWeekDay
     val formattedYear by systemTimeViewModel.formattedYear
     Column(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
     ) {
         Row(
             modifier = Modifier.fillMaxWidth()
@@ -111,5 +111,5 @@ fun TopInformationPreview(){
     val screenHeight = configuration.screenHeightDp.dp
     val screenWidth = configuration.screenWidthDp.dp
     val baseUnit = min(screenHeight, screenWidth) / 40f
-    TopInformation(baseUnit)
+//    TopInformation(baseUnit)
 }

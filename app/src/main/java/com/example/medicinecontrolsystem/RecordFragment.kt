@@ -1,3 +1,25 @@
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.medicinecontrolsystem.ComponentReminderPage.CenterReminderList
+import com.example.medicinecontrolsystem.ComponentReminderPage.TopInformation
+import com.example.medicinecontrolsystem.customFunctions.TimeViewModel
+
 //package com.example.medicinecontrolsystem
 //
 //import android.os.Bundle
@@ -238,3 +260,60 @@
 //fun RecordFragmentPreview() {
 //    RecordPage()
 //}
+
+@Composable
+fun ReminderPage(){
+    val timeViewModel: TimeViewModel = viewModel()
+
+    // 获取屏幕尺寸
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp.dp
+    val screenWidth = configuration.screenWidthDp.dp
+    val baseUnit = min(screenHeight, screenWidth) / 40f
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFFFFFCF7),
+                        Color(0xFFE6F1FF)
+                    )
+                )
+            )
+    ){
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = baseUnit * 1.5f)
+        ){
+            Spacer(modifier = Modifier.height(baseUnit * 4))
+            TopInformation(
+                baseUnit = baseUnit,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(baseUnit * 5f),
+                systemTimeViewModel = timeViewModel
+            )
+            Spacer(modifier = Modifier.height(baseUnit))
+            CenterReminderList(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(20f),
+                baseUnit = baseUnit,
+                viewModel = timeViewModel
+            )
+        }
+    }
+}
+
+@Preview(
+    device = Devices.PIXEL_3A,
+    showSystemUi = true,
+    showBackground = true
+)
+@Composable
+fun RecordFragmentPreview() {
+    ReminderPage()
+}

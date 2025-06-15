@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.medicinecontrolsystem.R
 import com.example.medicinecontrolsystem.customFunctions.TimeBarViewModel
@@ -34,7 +35,8 @@ import com.example.medicinecontrolsystem.customFunctions.TimeBarViewModel
 @Composable
 fun TimeBar(
     modifier: Modifier = Modifier,
-    timeBarViewModel: TimeBarViewModel
+    timeBarViewModel: TimeBarViewModel,
+    baseUnit:Dp
 ) {
     // 使用 StateFlow 收集状态
     val selectedIndex by timeBarViewModel.selectedIndex.collectAsState()
@@ -53,17 +55,17 @@ fun TimeBar(
         modifier = modifier.fillMaxWidth()
     ) {
         // 添加细的灰色条
-        Column(
-            modifier = modifier.fillMaxWidth()
-        ){
-            Spacer(modifier = Modifier.height(24.dp))
-            Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(2.dp)
-                    .background(Color(0xFFE0E0E0))//0xFFE0E0E0
-            )
-        }
+//        Column(
+//            modifier = modifier.fillMaxWidth()
+//        ){
+//            Spacer(modifier = Modifier.height(24.dp))
+//            Spacer(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(2.dp)
+//                    .background(Color(0xFFE0E0E0))//0xFFE0E0E0
+//            )
+//        }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = modifier.fillMaxWidth()
@@ -77,10 +79,17 @@ fun TimeBar(
                     TimeBarItem(
                         text = label,
                         isSelected = selectedIndex == index,
-                        onClick = { timeBarViewModel.setSelectedIndex(index) }
+                        onClick = { timeBarViewModel.setSelectedIndex(index) },
+                        baseUnit = baseUnit
                     )
                 }
             }
+            Spacer(
+                modifier = Modifier
+                   .fillMaxWidth()
+                    .height(2.dp)
+                    .background(Color(0xFFE0E0E0))//0xFFE0E0E0
+            )
         }
     }
 }
@@ -89,7 +98,8 @@ fun TimeBar(
 fun TimeBarItem(
     text: String,
     isSelected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    baseUnit: Dp
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -100,7 +110,7 @@ fun TimeBarItem(
         Text(
             text = text,
             color = if (isSelected) Color.Black else Color(0xFF888888),
-            fontSize = 14.sp,
+            fontSize = (baseUnit.value * 1.8).sp,
             fontWeight = if (isSelected) MaterialTheme.typography.titleLarge.fontWeight
             else MaterialTheme.typography.bodyMedium.fontWeight
         )
@@ -114,7 +124,7 @@ fun TimeBarItem(
 
         // 下方的条 - 选中时蓝色且变粗，未选中时灰色
         Card(
-            shape = RoundedCornerShape(5.dp),
+            shape = RoundedCornerShape(baseUnit),
             modifier = Modifier
                 .width(40.dp)
                 .height(if (isSelected) 5.dp else 2.dp)

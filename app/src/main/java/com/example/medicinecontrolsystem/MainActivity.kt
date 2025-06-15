@@ -2,6 +2,7 @@ package com.example.medicinecontrolsystem
 
 
 import android.os.Bundle
+import android.util.Log
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -30,11 +31,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
+import androidx.compose.foundation.layout.Column
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.medicinecontrolsystem.Camera.CameraBox
+import com.example.medicinecontrolsystem.Camera.FlashlightButton
+import com.example.medicinecontrolsystem.Camera.TopTextHint
 import com.example.medicinecontrolsystem.ComponentMainPage.CenterInformation
 import com.example.medicinecontrolsystem.ComponentMainPage.PatientInformationList
 import com.example.medicinecontrolsystem.ComponentMainPage.TimeBar
@@ -50,6 +56,8 @@ import com.example.medicinecontrolsystem.customFunctions.MedicineTakingStateView
 import com.example.medicinecontrolsystem.customFunctions.TimeBarViewModel
 import com.example.medicinecontrolsystem.customFunctions.TimeViewModel
 import com.example.medicinecontrolsystem.data.patients
+import com.example.medicinecontrolsystem.ComponentReminderPage.CenterReminderList
+import com.example.medicinecontrolsystem.ComponentReminderPage.TopInformation
 import com.example.medicinecontrolsystem.ui.theme.MedicineControlSystemTheme
 
 class MainActivity : ComponentActivity() {
@@ -65,7 +73,7 @@ class MainActivity : ComponentActivity() {
                         val navBackStackEntry by navController.currentBackStackEntryAsState()
                         val currentRoute = navBackStackEntry?.destination?.route
 
-                        if (currentRoute?.startsWith("photo_submit") != true) {
+                        if (currentRoute?.startsWith("photo_submit") != true && currentRoute != "camera") {
                             BottomNavBar(navController = navController)
                         }
                     }
@@ -156,6 +164,33 @@ class MainActivity : ComponentActivity() {
                             ProfileFragment()
                         }
                         composable(
+                            route = "camera",
+                            enterTransition = {
+                                slideIntoContainer(
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                                    animationSpec = tween(300)
+                                )
+                            },
+                            exitTransition = {
+                                slideOutOfContainer(
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                                    animationSpec = tween(300)
+                                )
+                            },
+                            popEnterTransition = {
+                                slideIntoContainer(
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                                    animationSpec = tween(300))
+                            },
+                            popExitTransition = {
+                                slideOutOfContainer(
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                                    animationSpec = tween(300))
+                            }
+                        ) {
+                            cameraScreen()
+                        }
+                        composable(
                             route = "photo_submit/{patientId}",
                             enterTransition = {
                                 slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Up)
@@ -205,6 +240,7 @@ fun HomeScreen(navController: NavController){
                 .fillMaxSize()
                 .padding(horizontal = baseUnit * 1.5f)
         ) {
+            Spacer(modifier = Modifier.height(baseUnit * 2))
             TopInformationCard(
                 gradinetBrush = Brush.horizontalGradient(
                     colors = listOf(
@@ -216,21 +252,24 @@ fun HomeScreen(navController: NavController){
                 completedTaskViewModel = completedTaskViewModel,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(baseUnit * 20f)
+                    .height(baseUnit * 20f),
+                baseUnit = baseUnit
             )
             Spacer(modifier = Modifier.height(baseUnit * 0.5f))
             TimeBar(
                 timeBarViewModel = timeBarViewModel,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(baseUnit * 3.3f)
+                    .height(baseUnit * 3.5f),
+                baseUnit = baseUnit
             )
-            Spacer(modifier = Modifier.height(baseUnit * 0.5f))
+            Spacer(modifier = Modifier.height(baseUnit * 0.8f))
             CenterInformation(
                 centerInformationViewModel = timeViewModel,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(baseUnit * 3f)
+                    .height(baseUnit * 3f),
+                    baseUnit = baseUnit
             )
             Spacer(modifier = Modifier.height(baseUnit * 0.5f))
             PatientInformationList(
@@ -364,35 +403,113 @@ fun PhotoSubmittingScreen(patientId: Int?) {
 }
 
 @Composable
+fun ReminderScreen(){
+    val timeViewModel: TimeViewModel = viewModel()
+
+    // 获取屏幕尺寸
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp.dp
+    val screenWidth = configuration.screenWidthDp.dp
+    val baseUnit = min(screenHeight, screenWidth) / 40f
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFFFFFCF7),
+                        Color(0xFFE6F1FF)
+                    )
+                )
+            )
+    ){
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = baseUnit * 1.5f)
+        ){
+            Spacer(modifier = Modifier.height(baseUnit * 4))
+            TopInformation(
+                baseUnit = baseUnit,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(baseUnit * 5f),
+                systemTimeViewModel = timeViewModel
+            )
+            Spacer(modifier = Modifier.height(baseUnit))
+            CenterReminderList(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(20f),
+                baseUnit = baseUnit,
+                viewModel = timeViewModel
+            )
+        }
+    }
+}
+
+@Composable
+fun cameraScreen(){
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(Color(0xFFFFFCF7), Color(0xFFE6F1FF))
+                )
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(16.dp)
+        ) {
+            // 1. 顶部提示文本
+            TopTextHint()
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // 2. 相机预览框
+            CameraBox(onBarcodeScanned = { barcode ->
+                // 这里处理扫描到的条形码
+                Log.d("Camera", "Scanned barcode: $barcode")
+            })
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // 3. 闪光灯按钮
+            FlashlightButton()
+        }
+    }
+}
+
+@Composable
 fun ErrorScreen(message: String) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Text(text = message, color = Color.Red)
     }
 }
 
-//@Preview(widthDp = 1080, heightDp = 2160)
-//@Composable
-//fun HomeScreenPreview() {
-//    // 创建模拟 ViewModel
-//    val mockTimeViewModel = TimeViewModel()
-//    val mockTimeBarViewModel = TimeBarViewModel()
-//    val mockCompletedTaskViewModel = CompletedTaskViewModel()
-//    val mockMedicineStateViewModel = MedicineTakingStateViewModel()
-//
-//    MedicineControlSystemTheme {
-//        Scaffold(
-//            bottomBar = { BottomNavBar(navController = rememberNavController()) }
-//        ) { innerPadding ->
-//            Box(Modifier.padding(innerPadding)) {
-//                HomeScreen(
-//                    navController = rememberNavController(),
-//                    // 传入模拟 ViewModel
-//                    timeViewModel = mockTimeViewModel,
-//                    timeBarViewModel = mockTimeBarViewModel,
-//                    completedTaskViewModel = mockCompletedTaskViewModel,
-//                    medicineTakingStateViewModel = mockMedicineStateViewModel
-//                )
-//            }
+@Preview(
+    device = Devices.PIXEL_3A,
+    showSystemUi = true,
+    showBackground = true
+)
+@Composable
+fun totalPreview(){
+//HomeScreen
+//    val mockNavController = rememberNavController()
+//    Scaffold(
+//        bottomBar = { BottomNavBar(navController = rememberNavController()) }
+//    ) { innerPadding ->
+//        Box(Modifier.padding(innerPadding)) {
+//            HomeScreen(mockNavController)
 //        }
 //    }
-//}
+//HomeScreen
+
+//RecordScreen
+    RecordScreen()
+//RecordScreen
+}

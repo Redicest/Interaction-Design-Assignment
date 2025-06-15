@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.medicinecontrolsystem.R
 import com.example.medicinecontrolsystem.customFunctions.TimeViewModel
@@ -20,7 +21,8 @@ import com.example.medicinecontrolsystem.customFunctions.TimeViewModel
 @Composable
 fun CenterInformation(
     modifier:Modifier = Modifier,
-    centerInformationViewModel: TimeViewModel
+    centerInformationViewModel: TimeViewModel,
+    baseUnit:Dp
     ){
     val timePhrase by centerInformationViewModel.timePhrase
     val timeFormatted by centerInformationViewModel.formattedTime
@@ -31,12 +33,12 @@ fun CenterInformation(
         ){
         Text(
             text = stringResource(R.string.currentTasks),
-            fontSize = 14.sp,
+            fontSize = (baseUnit.value * 1.8).sp,
             fontWeight = FontWeight.W600
         )
         Text(
             text = timePhrase + timeFormatted,
-            fontSize = 14.sp,
+            fontSize = (baseUnit.value * 1.8).sp,
             fontWeight = FontWeight.W600
         )
     }

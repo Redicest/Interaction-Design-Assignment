@@ -103,7 +103,7 @@ fun PatientInformationItem(
                 .fillMaxWidth()
                 .height(baseUnit * 8f) // 使用基础单位计算高度
                 .clickable { expanded.value = !expanded.value },
-            shape = RoundedCornerShape(16.dp),
+            shape = RoundedCornerShape(baseUnit),
         ) {
             Box(
                 modifier = Modifier
@@ -135,8 +135,8 @@ fun PatientInformationItem(
                         modifier = Modifier.padding(end = baseUnit)
                     ) {
                         Card(
-                            shape = RoundedCornerShape(30.dp),
-                            modifier = Modifier.size(width = baseUnit * 5f, height = baseUnit * 2.7f),
+                            shape = RoundedCornerShape(baseUnit),
+                            modifier = Modifier.size(width = baseUnit * 8f, height = baseUnit * 2.7f),
                         ) {
                             Box(
                                 modifier = Modifier
@@ -153,7 +153,7 @@ fun PatientInformationItem(
                                         else R.string.not_taking_medicine
                                     ),
                                     textAlign = TextAlign.Center,
-                                    fontSize = (baseUnit.value * 1.3).sp, // 相对字体大小
+                                    fontSize = (baseUnit.value * 1.8).sp, // 相对字体大小
                                     color = Color(0xFFFFFFFF)
                                 )
                             }
@@ -161,7 +161,7 @@ fun PatientInformationItem(
                         Spacer(modifier = Modifier.height(baseUnit * 0.2f))
                         Text(
                             text = stringResource(R.string.medicine_box),
-                            fontSize = (baseUnit.value * 1.3).sp, // 相对字体大小
+                            fontSize = (baseUnit.value * 1.8).sp, // 相对字体大小
                             fontWeight = FontWeight.W400
                         )
                     }
@@ -180,7 +180,7 @@ fun PatientInformationItem(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(baseUnit * 3.5f), // 使用基础单位
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(baseUnit),
             ) {
                 Box(
                     modifier = Modifier
@@ -207,7 +207,7 @@ fun PatientInformationItem(
                             )
                             Text(
                                 text = stringResource(R.string.additional_inormation),
-                                fontSize = (baseUnit.value * 1.2).sp,
+                                fontSize = (baseUnit.value * 1.8).sp,
                                 fontWeight = FontWeight.W400,
                                 modifier = Modifier.padding(start = baseUnit * 0.5f)
                             )
@@ -224,12 +224,12 @@ fun PatientInformationItem(
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.clickable {
-                                // 扫描检查操作
+                                navController?.navigate("camera")
                             }
                         ) {
                             Text(
                                 text = stringResource(R.string.scanning_check),
-                                fontSize = (baseUnit.value * 1.2).sp,
+                                fontSize = (baseUnit.value * 1.8).sp,
                                 fontWeight = FontWeight.W400,
                                 modifier = Modifier.padding(end = baseUnit * 0.5f)
                             )
@@ -271,13 +271,13 @@ fun PatientText(
         Text(
             text = stringResource(patientName),
             fontWeight = FontWeight.W600,
-            fontSize = (baseUnit.value * 1.6).sp // 相对字体大小
+            fontSize = (baseUnit.value * 1.8).sp // 相对字体大小
         )
         Spacer(modifier = Modifier.height(baseUnit * 0.3f))
         Text(
             text = stringResource(patientBedNumber),
             fontWeight = FontWeight.W400,
-            fontSize = (baseUnit.value * 1.2).sp // 相对字体大小
+            fontSize = (baseUnit.value * 1.8).sp // 相对字体大小
         )
     }
 }

@@ -58,7 +58,12 @@ import com.example.medicinecontrolsystem.customFunctions.TimeViewModel
 import com.example.medicinecontrolsystem.data.patients
 import com.example.medicinecontrolsystem.ComponentReminderPage.CenterReminderList
 import com.example.medicinecontrolsystem.ComponentReminderPage.TopInformation
+import com.example.medicinecontrolsystem.ComponentProfilePage.BottomSettingColumn
+import com.example.medicinecontrolsystem.ComponentProfilePage.CenterOptions
+import com.example.medicinecontrolsystem.ComponentProfilePage.ProfileTopInformation
+import com.example.medicinecontrolsystem.ComponentProfilePage.RecentMessage
 import com.example.medicinecontrolsystem.ui.theme.MedicineControlSystemTheme
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -188,7 +193,7 @@ class MainActivity : ComponentActivity() {
                                     animationSpec = tween(300))
                             }
                         ){
-                            ProfileFragment()
+                            ProfileScreen()
                         }
                         composable(
                             route = "camera",
@@ -513,6 +518,42 @@ fun cameraScreen(){
 }
 
 @Composable
+fun ProfileScreen(){
+    // 获取屏幕尺寸
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp.dp
+    val screenWidth = configuration.screenWidthDp.dp
+    val baseUnit = min(screenHeight, screenWidth) / 40f
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFFFFFCF7),
+                        Color(0xFFE6F1FF)
+                    )
+                )
+            )
+    ){
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            Spacer(modifier = Modifier.height(baseUnit * 8))
+            ProfileTopInformation(baseUnit = baseUnit)
+            Spacer(modifier = Modifier.height(baseUnit * 4))
+            CenterOptions(baseUnit = baseUnit)
+            Spacer(modifier = Modifier.height(baseUnit * 4))
+            RecentMessage(baseUnit = baseUnit)
+            Spacer(modifier = Modifier.height(baseUnit * 1))
+            BottomSettingColumn(baseUnit = baseUnit)
+        }
+
+    }
+}
+
+@Composable
 fun ErrorScreen(message: String) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Text(text = message, color = Color.Red)
@@ -527,17 +568,21 @@ fun ErrorScreen(message: String) {
 @Composable
 fun totalPreview(){
 //HomeScreen
-    val mockNavController = rememberNavController()
-    Scaffold(
-        bottomBar = { BottomNavBar(navController = rememberNavController()) }
-    ) { innerPadding ->
-        Box(Modifier.padding(innerPadding)) {
-            HomeScreen(mockNavController)
-        }
-    }
+//    val mockNavController = rememberNavController()
+//    Scaffold(
+//        bottomBar = { BottomNavBar(navController = rememberNavController()) }
+//    ) { innerPadding ->
+//        Box(Modifier.padding(innerPadding)) {
+//            HomeScreen(mockNavController)
+//        }
+//    }
 //HomeScreen
 
 //RecordScreen
 //    RecordScreen()
 //RecordScreen
+
+//ProfileScreen
+    ProfileScreen()
+//ProfileScreen
 }

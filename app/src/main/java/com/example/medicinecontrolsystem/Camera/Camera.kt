@@ -1,269 +1,177 @@
-package com.example.medicinecontrolsystem.Camera
-
+package com.example.medicinecontrolsystem
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.os.Bundle
+import android.media.AudioManager
+import android.media.ToneGenerator
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ExperimentalGetImage
-import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.Preview
+import androidx.annotation.OptIn
+import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.FlashlightOff
+import androidx.compose.material.icons.filled.FlashlightOn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
-import com.google.common.util.concurrent.ListenableFuture
-import com.google.mlkit.vision.barcode.BarcodeScanner
-import com.google.mlkit.vision.barcode.BarcodeScannerOptions
+import androidx.navigation.NavController
+import com.example.medicinecontrolsystem.data.patients
 import com.google.mlkit.vision.barcode.BarcodeScanning
-import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
-import androidx.camera.core.ImageProxy
-import androidx.compose.foundation.border
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.filled.FlashlightOff
-import androidx.compose.material.icons.filled.FlashlightOn
-import androidx.compose.material3.IconButton
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.unit.Dp
-import androidx.compose.material3.ShapeDefaults
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.geometry.Offset
 
-class Camera : Fragment() {
-    private var hasCameraPermission by mutableStateOf(false)
-    private var firstBarcode by mutableStateOf("")
-    private var secondBarcode by mutableStateOf("")
-    private var showErrorDialog by mutableStateOf(false)
-    private var scanningState by mutableStateOf(ScanningState.FIRST_BARCODE)
-
-    private val cameraPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { granted ->
-        hasCameraPermission = granted
-        if (!granted) {
-            // 处理权限被拒绝的情况
-            Log.e("Camera", "Camera permission denied")
-        }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return ComposeView(requireContext()).apply {
-            setContent {
-                CameraScreen(
-                    hasCameraPermission = hasCameraPermission,
-                    firstBarcode = firstBarcode,
-                    secondBarcode = secondBarcode,
-                    scanningState = scanningState,
-                    showErrorDialog = showErrorDialog,
-                    onPermissionRequest = { cameraPermissionLauncher.launch(Manifest.permission.CAMERA) },
-                    onRetryScan = { resetScanning() },
-                    onBack = { findNavController().popBackStack() },
-                    onScanSuccess = {
-                        findNavController().navigate("photo_submit")
-                    },
-                    onShowErrorDialog = { showErrorDialog = true },
-                    onBarcodeScanned = { barcodeValue ->
-                        // 根据当前状态更新对应的条形码和状态
-                        when (scanningState) {
-                            ScanningState.FIRST_BARCODE -> {
-                                firstBarcode = barcodeValue
-                                scanningState = ScanningState.SECOND_BARCODE
-                            }
-                            ScanningState.SECOND_BARCODE -> {
-                                secondBarcode = barcodeValue
-                                scanningState = ScanningState.COMPLETED
-                            }
-                            ScanningState.COMPLETED -> {
-                                // 已经完成扫描，忽略新扫描
-                            }
-                        }
-                    }
-                )
-            }
-        }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        checkCameraPermission()
-    }
-
-    private fun checkCameraPermission() {
-        val permission = ContextCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.CAMERA
-        )
-        hasCameraPermission = permission == PackageManager.PERMISSION_GRANTED
-        if (!hasCameraPermission) {
-            cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
-        }
-    }
-
-    private fun resetScanning() {
-        firstBarcode = ""
-        secondBarcode = ""
-        scanningState = ScanningState.FIRST_BARCODE
-        showErrorDialog = false
-    }
-}
-
-enum class ScanningState {
-    FIRST_BARCODE,
-    SECOND_BARCODE,
-    COMPLETED
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
+@kotlin.OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CameraScreen(
-    hasCameraPermission: Boolean,
-    firstBarcode: String,
-    secondBarcode: String,
-    scanningState: ScanningState,
-    showErrorDialog: Boolean,
-    onPermissionRequest: () -> Unit,
-    onRetryScan: () -> Unit,
-    onBack: () -> Unit,
-    onScanSuccess: () -> Unit,
-    onShowErrorDialog: () -> Unit,
-    onBarcodeScanned: (String) -> Unit
-) {
+fun CameraScreen(navController: NavController, patientId: Int?) {
+    // 在 CameraScreen 中添加
+    BackHandler {
+        navController.popBackStack()
+    }
+    if (patientId == null) {
+        ErrorScreen("无效的患者ID")
+        return
+    }
+// 根据ID查找病人信息
+    val patient = remember(patientId) {
+        patients.find { it.id == patientId }
+    }
+
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
+    val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
+    val coroutineScope = rememberCoroutineScope()
 
-    // 当扫描完成时检查结果
-    LaunchedEffect(scanningState) {
-        if (scanningState == ScanningState.COMPLETED) {
-            if (firstBarcode == secondBarcode && firstBarcode.isNotEmpty()) {
-                onScanSuccess()
-            } else {
-                onShowErrorDialog()
-            }
-        }
+    var isFlashOn by remember { mutableStateOf(false) }
+    var cameraControl by remember { mutableStateOf<CameraControl?>(null) }
+    var isScanning by remember { mutableStateOf(true) }
+
+    var showErrorDialog by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
+    var scannedBarcodes by remember { mutableStateOf(listOf<String>()) }
+
+    val permissionGranted = remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(
+                context, Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
+        )
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("条形码扫描") },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "返回"
-                        )
-                    }
-                }
-            )
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        permissionGranted.value = granted
+    }
+
+    if (!permissionGranted.value) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Brush.verticalGradient(listOf(Color(0xFFFFFCF7), Color(0xFFE6F1FF)))),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text("请授予相机权限以继续使用扫码功能")
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = { permissionLauncher.launch(Manifest.permission.CAMERA) }) {
+                Text("请求权限")
+            }
         }
-    ) { innerPadding ->
+        return
+    }
+
+    Scaffold(topBar = { TopAppBar(title = { Text("扫码核对") }) }) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(Color(0xFFFFFCF7), Color(0xFFE6F1FF))
-                    )
-                ),
+                .background(Brush.verticalGradient(listOf(Color(0xFFFFFCF7), Color(0xFFE6F1FF)))),
             contentAlignment = Alignment.Center
         ) {
-            if (hasCameraPermission) {
-                // 显示相机预览
-                CameraPreview(
-                    onBarcodeScanned = onBarcodeScanned
+            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize()) {
+                TopHintText()
+                Spacer(modifier = Modifier.height(16.dp))
+                CameraPreviewBox(
+                    isFlashOn = isFlashOn,
+                    onCameraControlReady = { cameraControl = it },
+                    onBarcodesScanned = { codes ->
+                        if (!isScanning) return@CameraPreviewBox
+                        isScanning = false
+
+                        val cleanCodes = codes.filter { it.isNotBlank() }
+
+                        when {
+                            cleanCodes.size < 2 -> {
+                                errorMessage = "未能识别两个条形码，请放入两个条形码"
+                                scannedBarcodes = cleanCodes
+                                showErrorDialog = true
+                            }
+
+                            cleanCodes[0] != cleanCodes[1] -> {
+                                errorMessage = "两个条形码不一致，请确认药品信息后重新拍摄"
+                                scannedBarcodes = cleanCodes
+                                showErrorDialog = true
+                            }
+
+                            else -> {
+                                playBeep()
+                                navController.navigate("photo_submit/$patientId"){
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            }
+                        }
+
+                        coroutineScope.launch {
+                            delay(2000L)
+                            isScanning = true
+                        }
+                    }
                 )
-
-                // 显示扫描状态
-                Column(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = 32.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = when (scanningState) {
-                            ScanningState.FIRST_BARCODE -> "请扫描第一个条形码"
-                            ScanningState.SECOND_BARCODE -> "请扫描第二个条形码"
-                            ScanningState.COMPLETED -> "扫描完成"
-                        },
-                        style = MaterialTheme.typography.titleMedium
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    if (firstBarcode.isNotEmpty()) {
-                        Text("第一个条形码: $firstBarcode", style = MaterialTheme.typography.bodyMedium)
+                Spacer(modifier = Modifier.height(32.dp))
+                FlashlightToggleButton(
+                    isFlashOn = isFlashOn,
+                    onToggle = {
+                        isFlashOn = !isFlashOn
+                        cameraControl?.enableTorch(isFlashOn)
                     }
-
-                    if (secondBarcode.isNotEmpty()) {
-                        Text("第二个条形码: $secondBarcode", style = MaterialTheme.typography.bodyMedium)
-                    }
-                }
-            } else {
-                // 没有权限时显示提示
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    Text("需要相机权限才能使用扫描功能", style = MaterialTheme.typography.titleMedium)
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Button(onClick = onPermissionRequest) {
-                        Text("请求权限")
-                    }
-                }
+                )
             }
 
-            // 错误对话框
             if (showErrorDialog) {
                 AlertDialog(
-                    onDismissRequest = { /* 不允许外部点击关闭 */ },
-                    title = { Text("条形码不匹配") },
+                    onDismissRequest = {},
+                    title = { Text("扫描失败") },
                     text = {
                         Column {
-                            Text("扫描到的两个条形码不一致:", style = MaterialTheme.typography.bodyMedium)
+                            scannedBarcodes.forEachIndexed { index, code ->
+                                Text("条码 ${index + 1}：$code")
+                            }
                             Spacer(modifier = Modifier.height(8.dp))
-                            Text("第一个: $firstBarcode", style = MaterialTheme.typography.bodyMedium)
-                            Text("第二个: $secondBarcode", style = MaterialTheme.typography.bodyMedium)
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Text("请确保扫描的是同一药品上的两个相同条形码", style = MaterialTheme.typography.bodyMedium)
+                            Text(errorMessage)
                         }
                     },
                     confirmButton = {
-                        Button(onClick = onRetryScan) {
+                        Button(onClick = {
+                            scannedBarcodes = emptyList()
+                            showErrorDialog = false
+                        }) {
                             Text("重新扫描")
-                        }
-                    },
-                    dismissButton = {
-                        TextButton(onClick = onBack) {
-                            Text("返回")
                         }
                     }
                 )
@@ -272,146 +180,129 @@ fun CameraScreen(
     }
 }
 
+// 顶部提示
 @Composable
-fun CameraPreview(onBarcodeScanned: (String) -> Unit) {
-    val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
-    var cameraProviderFuture by remember { mutableStateOf<ListenableFuture<ProcessCameraProvider>?>(null) }
+fun TopHintText() {
+    Text(
+        text = "请将桌面条形码与药盒条形码同时放入框内",
+        style = MaterialTheme.typography.titleMedium,
+        color = Color.Black,
+        modifier = Modifier.padding(16.dp)
+    )
+}
 
-    DisposableEffect(Unit) {
-        cameraProviderFuture = ProcessCameraProvider.getInstance(context)
-
-        onDispose {
-            // 清理资源
-        }
-    }
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        AndroidView(
-            factory = { ctx ->
-                val previewView = androidx.camera.view.PreviewView(ctx)
-                previewView.scaleType = androidx.camera.view.PreviewView.ScaleType.FILL_CENTER
-
-                cameraProviderFuture?.addListener({
-                    val cameraProvider = cameraProviderFuture?.get() ?: return@addListener
-
-                    val preview = Preview.Builder().build().also {
-                        it.setSurfaceProvider(previewView.surfaceProvider)
-                    }
-
-                    val imageAnalysis = ImageAnalysis.Builder()
-                        .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                        .build()
-                        .also {
-                            it.setAnalyzer(Executors.newSingleThreadExecutor(), BarcodeAnalyzer { barcode ->
-                                onBarcodeScanned(barcode)
-                            })
-                        }
-
-                    try {
-                        cameraProvider.unbindAll()
-                        cameraProvider.bindToLifecycle(
-                            lifecycleOwner,
-                            CameraSelector.DEFAULT_BACK_CAMERA,
-                            preview,
-                            imageAnalysis
-                        )
-                    } catch (exc: Exception) {
-                        Log.e("Camera", "Use case binding failed", exc)
-                    }
-                }, ContextCompat.getMainExecutor(context))
-
-                previewView
-            },
-            modifier = Modifier.fillMaxSize()
+// 手电按钮
+@Composable
+fun FlashlightToggleButton(
+    isFlashOn: Boolean,
+    onToggle: () -> Unit
+) {
+    IconButton(onClick = onToggle) {
+        Icon(
+            imageVector = if (isFlashOn) Icons.Default.FlashlightOn else Icons.Default.FlashlightOff,
+            contentDescription = "闪光灯",
+            tint = if (isFlashOn) Color.Yellow else Color.Gray,
+            modifier = Modifier.size(40.dp)
         )
     }
 }
 
-class BarcodeAnalyzer(private val onBarcodeScanned: (String) -> Unit) : ImageAnalysis.Analyzer {
-    private val options = BarcodeScannerOptions.Builder()
-        .setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS)
-        .build()
+// 相机预览
+@Composable
+fun CameraPreviewBox(
+    isFlashOn: Boolean,
+    onCameraControlReady: (CameraControl) -> Unit,
+    onBarcodesScanned: (List<String>) -> Unit
+) {
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
 
-    private val scanner: BarcodeScanner by lazy { BarcodeScanning.getClient(options) }
+    AndroidView(
+        factory = { ctx ->
+            val previewView = androidx.camera.view.PreviewView(ctx).apply {
+                scaleType = androidx.camera.view.PreviewView.ScaleType.FILL_CENTER
+            }
 
-    @ExperimentalGetImage
+            cameraProviderFuture.addListener({
+                val cameraProvider = cameraProviderFuture.get()
+                val preview = Preview.Builder().build().also {
+                    it.setSurfaceProvider(previewView.surfaceProvider)
+                }
+
+                val imageAnalysis = ImageAnalysis.Builder()
+                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                    .build()
+                    .also {
+                        it.setAnalyzer(Executors.newSingleThreadExecutor(), BarcodeAnalyzer(onBarcodesScanned))
+                    }
+
+                val camera = cameraProvider.bindToLifecycle(
+                    lifecycleOwner,
+                    CameraSelector.DEFAULT_BACK_CAMERA,
+                    preview,
+                    imageAnalysis
+                )
+
+                onCameraControlReady(camera.cameraControl)
+                camera.cameraControl.enableTorch(isFlashOn)
+
+            }, ContextCompat.getMainExecutor(context))
+
+            previewView
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(3f / 4f)
+    )
+}
+
+// 条码分析器
+class BarcodeAnalyzer(
+    private val onScanned: (List<String>) -> Unit
+) : ImageAnalysis.Analyzer {
+    private val scanner = BarcodeScanning.getClient()
+
+    @OptIn(ExperimentalGetImage::class)
     override fun analyze(imageProxy: ImageProxy) {
         val mediaImage = imageProxy.image
         if (mediaImage != null) {
-            val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
-
-            scanner.process(image)
+            val inputImage =
+                InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
+            scanner.process(inputImage)
                 .addOnSuccessListener { barcodes ->
-                    // 使用 firstOrNull 查找第一个有效的条形码
-                    barcodes.firstOrNull { barcode ->
-                        barcode.rawValue?.isNotBlank() == true
-                    }?.rawValue?.let { value ->
-                        onBarcodeScanned(value)
+                    val codes = barcodes.mapNotNull { it.rawValue?.trim() }
+                    val uniqueCodes = codes.distinct()
+
+                    val uniquePositions = barcodes
+                        .mapNotNull { it.boundingBox }
+                        .distinctBy { it.centerY() to it.centerX() }
+
+                    val finalCodes = when {
+                        uniqueCodes.size == 1 && uniquePositions.size >= 2 -> listOf(uniqueCodes[0], uniqueCodes[0])
+                        uniqueCodes.size >= 2 -> uniqueCodes.take(2)
+                        else -> uniqueCodes
+                    }
+
+                    if (finalCodes.isNotEmpty()) {
+                        onScanned(finalCodes)
                     }
                 }
-                .addOnFailureListener { e ->
-                    Log.e("BarcodeAnalyzer", "Barcode scanning failed", e)
-                }
-                .addOnCompleteListener {
-                    imageProxy.close()
-                }
+                .addOnFailureListener { Log.e("Barcode", "识别失败", it) }
+                .addOnCompleteListener { imageProxy.close() }
         } else {
             imageProxy.close()
         }
     }
 }
 
-// Camera.kt
 
-// 顶部提示文本
-@Composable
-fun TopTextHint() {
-    Text(
-        text = "请将桌面条形码与药盒条形码同时放入框内",
-        style = MaterialTheme.typography.titleMedium,
-        color = Color.Black,
-        modifier = Modifier.padding(16.dp))
-}
-
-// 相机预览框
-@Composable
-fun CameraBox(onBarcodeScanned: (String) -> Unit) {
-    Box(
-        modifier = Modifier
-            .size(300.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .border(
-                width = 4.dp,
-                brush = Brush.linearGradient(
-                    colors = listOf(Color(0xFF4CAF50), Color(0xFF2196F3))
-                ),
-                shape = RoundedCornerShape(16.dp)
-            )
-    ) {
-        CameraPreview(onBarcodeScanned = onBarcodeScanned)
-    }
-}
-
-// 闪光灯按钮
-@Composable
-fun FlashlightButton() {
-    var isFlashOn by remember { mutableStateOf(false) }
-
-    IconButton(
-        onClick = { isFlashOn = !isFlashOn },
-        modifier = Modifier
-            .size(60.dp)
-            .background(
-                color = if (isFlashOn) Color.Yellow.copy(alpha = 0.3f) else Color.Transparent,
-                shape = CircleShape
-            )
-    ) {
-        Icon(
-            imageVector = if (isFlashOn) Icons.Filled.FlashlightOn else Icons.Filled.FlashlightOff,
-            contentDescription = "闪光灯",
-            tint = if (isFlashOn) Color.Yellow else Color.Gray,
-            modifier = Modifier.size(36.dp)
-        )
+// 提示音
+fun playBeep() {
+    try {
+        val toneGen = ToneGenerator(AudioManager.STREAM_MUSIC, 100)
+        toneGen.startTone(ToneGenerator.TONE_PROP_BEEP, 150)
+    } catch (e: Exception) {
+        Log.e("Beep", "无法播放提示音", e)
     }
 }

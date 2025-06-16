@@ -224,7 +224,7 @@ fun PatientInformationItem(
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.clickable {
-                                navController?.navigate("camera")
+                                navController?.navigate("camera/${patient.id}")
                             }
                         ) {
                             Text(

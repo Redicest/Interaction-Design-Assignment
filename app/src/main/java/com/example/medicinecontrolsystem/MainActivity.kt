@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
@@ -38,9 +39,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.medicinecontrolsystem.Camera.CameraBox
-import com.example.medicinecontrolsystem.Camera.FlashlightButton
-import com.example.medicinecontrolsystem.Camera.TopTextHint
 import com.example.medicinecontrolsystem.ComponentMainPage.CenterInformation
 import com.example.medicinecontrolsystem.ComponentMainPage.PatientInformationList
 import com.example.medicinecontrolsystem.ComponentMainPage.TimeBar
@@ -78,7 +76,7 @@ class MainActivity : ComponentActivity() {
                         val navBackStackEntry by navController.currentBackStackEntryAsState()
                         val currentRoute = navBackStackEntry?.destination?.route
 
-                        if (currentRoute?.startsWith("photo_submit") != true && currentRoute != "camera" && currentRoute != "reminder") {
+                        if (currentRoute?.startsWith("photo_submit") != true && currentRoute?.startsWith("camera") != true && currentRoute != "reminder") {
                             BottomNavBar(navController = navController)
                         }
                     }
@@ -196,7 +194,7 @@ class MainActivity : ComponentActivity() {
                             ProfileScreen()
                         }
                         composable(
-                            route = "camera",
+                            route = "camera/{patientId}",
                             enterTransition = {
                                 slideIntoContainer(
                                     towards = AnimatedContentTransitionScope.SlideDirection.Left,
@@ -219,20 +217,42 @@ class MainActivity : ComponentActivity() {
                                     towards = AnimatedContentTransitionScope.SlideDirection.Right,
                                     animationSpec = tween(300))
                             }
-                        ) {
-                            cameraScreen()
+                        ) { backStackEntry->
+                            val patientId = backStackEntry.arguments?.getString("patientId")?.toIntOrNull()
+                            CameraScreen(navController = navController, patientId = patientId)
                         }
                         composable(
                             route = "photo_submit/{patientId}",
                             enterTransition = {
-                                slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Up)
+                                slideIntoContainer(
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                                    animationSpec = tween(300)
+                                )
                             },
                             exitTransition = {
-                                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Down)
+                                slideOutOfContainer(
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                                    animationSpec = tween(300)
+                                )
+                            },
+                            popEnterTransition = {
+                                slideIntoContainer(
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                                    animationSpec = tween(300)
+                                )
+                            },
+                            popExitTransition = {
+                                slideOutOfContainer(
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                                    animationSpec = tween(300)
+                                )
                             }
                         ){ backStackEntry->
                             val patientId = backStackEntry.arguments?.getString("patientId")?.toIntOrNull()
-                            PhotoSubmittingScreen(patientId = patientId)
+                            PhotoSubmittingScreen(
+                                navController = navController, // 添加 navController 参数
+                                patientId = patientId
+                            )
                         }
                     }
                 }
@@ -375,8 +395,17 @@ fun RecordScreen(){
     }
 }
 
+// 修改函数签名
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PhotoSubmittingScreen(patientId: Int?) {
+fun PhotoSubmittingScreen(
+    navController: NavController, // 添加 navController 参数
+    patientId: Int?
+) {
+    // 添加返回键处理
+    BackHandler {
+        navController?.navigate("home") // 返回上一页
+    }
     // 获取屏幕尺寸并计算基础单位
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
@@ -478,41 +507,6 @@ fun ReminderScreen(){
                 baseUnit = baseUnit,
                 viewModel = timeViewModel
             )
-        }
-    }
-}
-
-@Composable
-fun cameraScreen(){
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(Color(0xFFFFFCF7), Color(0xFFE6F1FF))
-                )
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(16.dp)
-        ) {
-            // 1. 顶部提示文本
-            TopTextHint()
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // 2. 相机预览框
-            CameraBox(onBarcodeScanned = { barcode ->
-                // 这里处理扫描到的条形码
-                Log.d("Camera", "Scanned barcode: $barcode")
-            })
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // 3. 闪光灯按钮
-            FlashlightButton()
         }
     }
 }

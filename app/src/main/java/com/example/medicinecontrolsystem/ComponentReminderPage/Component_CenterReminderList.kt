@@ -130,7 +130,7 @@ fun CenterReminderItem(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(horizontal = baseUnit * 1.2f)
-                .height(baseUnit * 7f),
+                .height(baseUnit * 8f),
             shape = RoundedCornerShape(baseUnit),
             elevation = CardDefaults.cardElevation(defaultElevation = baseUnit * 0.4f)
         ) {
